@@ -6,10 +6,8 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer"], 
 			var oItem = oEvent.getParameter('item');
 			
 			var sModuleName = oItem.getBindingContext().getProperty("Name");
-			
 			var sPackageName = sModuleName.replace(/-/g, '');
 			
-			jQuery.sap.registerModulePath("incentergy."+sPackageName, "./"+sModuleName+"-frontend/incentergy/"+sPackageName)
 
 			var oNavContainer = this.byId("navContainer");
 			oNavContainer.removeAllPages();
