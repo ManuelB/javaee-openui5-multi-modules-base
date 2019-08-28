@@ -19,47 +19,51 @@ function(UIComponent, XMLView) {
 			// }
 			this._aUiExtensions = {};
 			
+			this._initModules();
+
 			// create the views based on the url/hash
 			this.getRouter().initialize();
 			
-			this._initModules();
 
 		},
 		_initModules: function() {
 			var me = this;
-			this.getModel().read("/Modules", {
-				"success": function(oData) {
-					Promise.all(oData.results.map(function (oModule) {
-						var sModuleName = oModule.Name;
-						var sPackageName = sModuleName.replace(/-/g, '');
-						// Register module path
-						jQuery.sap.registerModulePath("incentergy."+sPackageName, "./"+sModuleName+"-frontend/incentergy/"+sPackageName);
-						
-						var sManifestUrl = "./"+sModuleName+"-frontend/incentergy/"+sPackageName+"/manifest.json";
-						return fetch(sManifestUrl, {
-							credentials: 'include'
-						}).then(function(response) {
-						    return response.json();
-						});
-						
-					})).then(function (aManifests) {
-						aManifests.forEach(function (oManifest) {
-							if("incentergy.base" in oManifest && "uiExtensions" in oManifest["incentergy.base"]) {
-								for(var sUiExtension in oManifest["incentergy.base"]["uiExtensions"]) {
-									if(!(sUiExtension in this._aUiExtensions)) {
-										this._aUiExtensions[sUiExtension] = [];
-										this._subscribeToExtensionMessages(sUiExtension);
+			this.pModulesLoaded = new Promise(function (fnResolve) {				
+				this.getModel().read("/Modules", {
+					"success": function(oData) {
+						Promise.all(oData.results.map(function (oModule) {
+							var sModuleName = oModule.Name;
+							var sPackageName = sModuleName.replace(/-/g, '');
+							// Register module path
+							jQuery.sap.registerModulePath("incentergy."+sPackageName, "./"+sModuleName+"-frontend/incentergy/"+sPackageName);
+							
+							var sManifestUrl = "./"+sModuleName+"-frontend/incentergy/"+sPackageName+"/manifest.json";
+							return fetch(sManifestUrl, {
+								credentials: 'include'
+							}).then(function(response) {
+								return response.json();
+							});
+							
+						})).then(function (aManifests) {
+							aManifests.forEach(function (oManifest) {
+								if("incentergy.base" in oManifest && "uiExtensions" in oManifest["incentergy.base"]) {
+									for(var sUiExtension in oManifest["incentergy.base"]["uiExtensions"]) {
+										if(!(sUiExtension in this._aUiExtensions)) {
+											this._aUiExtensions[sUiExtension] = [];
+											this._subscribeToExtensionMessages(sUiExtension);
+										}
+										this._aUiExtensions[sUiExtension] = this._aUiExtensions[sUiExtension].concat(oManifest["incentergy.base"]["uiExtensions"][sUiExtension]);
 									}
-									this._aUiExtensions[sUiExtension] = this._aUiExtensions[sUiExtension].concat(oManifest["incentergy.base"]["uiExtensions"][sUiExtension]);
 								}
-							}
+								fnResolve();
+							}.bind(this));
 						}.bind(this));
-					}.bind(this));
-				}.bind(this),
-				"error": function() {
-					
-				}
-			});
+					}.bind(this),
+					"error": function() {
+						
+					}
+				});
+			}.bind(this));
 		},
 		_subscribeToExtensionMessages : function (sUiExtension) {
 			var oEventBus = sap.ui.getCore().getEventBus();
@@ -73,6 +77,9 @@ function(UIComponent, XMLView) {
 					oEventBus.publish("incentergy.base.uiExtensions", sReplyTo, aViews);
 				})
 			}.bind(this));
+		},
+		modulesLoaded : function () {
+			return this.pModulesLoaded;
 		}
 	});
 });
