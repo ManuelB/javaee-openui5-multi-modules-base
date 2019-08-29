@@ -53,6 +53,7 @@
         <module>jaxrs</module>
         <module>jsr375</module>
         <module>principal</module>
+        <module>wildfly-jwt-auth-provider</module>
     </modules>
 
     <profiles>

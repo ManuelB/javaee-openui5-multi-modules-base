@@ -13,5 +13,6 @@
     <module>frontend</module>
     <module>backend</module>
     <module>olingo</module>
+    <module>jwt</module>
   </modules>
 </project>
