@@ -1,4 +1,4 @@
-sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer"], function (Controller, ComponentContainer) {
+sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "sap/ui/core/Component"], function (Controller, ComponentContainer, Component) {
 	"use strict";
 
 	return Controller.extend("incentergy.base.view.App", {
@@ -13,12 +13,23 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer"], 
 							this._sCurrentModul = sPackageName;
 							var oNavContainer = this.byId("navContainer");
 							oNavContainer.removeAllPages();
+							
+							var sComponentName = "incentergy."+sPackageName;
+							var oComponent = Component.get(sComponentName);
+							
+							if(oComponent) {
+								oComponent.destroy();
+							}
+							
 							var oContainer = new ComponentContainer({
-								name: "incentergy."+sPackageName,
+								name: sComponentName,
 								manifest: true,
 								async: true,
 								height: "100%",
-								width: "100%"
+								width: "100%",
+								settings: {
+									id: "incentergy."+sPackageName
+								}
 							});
 							oNavContainer.addPage(oContainer);
 							oNavContainer.to(oContainer);

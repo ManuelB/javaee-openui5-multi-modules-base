@@ -46,6 +46,7 @@ function(UIComponent, XMLView) {
 							
 						})).then(function (aManifests) {
 							aManifests.forEach(function (oManifest) {
+								
 								if("incentergy.base" in oManifest && "uiExtensions" in oManifest["incentergy.base"]) {
 									for(var sUiExtension in oManifest["incentergy.base"]["uiExtensions"]) {
 										if(!(sUiExtension in this._aUiExtensions)) {
