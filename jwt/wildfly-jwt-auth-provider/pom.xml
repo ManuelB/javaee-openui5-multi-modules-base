@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.microprofile.jwt</groupId>
-			<artifactId>jwt-auth-principal-prototype</artifactId>
+			<artifactId>jwt-auth-jaxrs-prototype</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>

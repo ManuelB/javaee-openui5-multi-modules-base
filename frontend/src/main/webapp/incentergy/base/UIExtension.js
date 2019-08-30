@@ -21,8 +21,7 @@ sap.ui.define([ "sap/ui/core/Control" ], function(Control) {
 					}.bind(this));
 				}
 			}.bind(this));
-			
-			oEventBus.publish("incentergy.base.uiExtensions", this.getName(), sReplyTo);
+			oEventBus.publish("incentergy.base.uiExtensions", this.getName(), {replyTo: sReplyTo});
 			
 		},
 		renderer : function(oRM, oControl) {

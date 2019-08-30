@@ -1,12 +1,11 @@
-sap.ui.define([ "sap/ui/core/UIComponent", "sap/ui/core/mvc/XMLView"],
-function(UIComponent, XMLView) {
+sap.ui.define([ "sap/ui/core/UIComponent", "sap/ui/core/mvc/XMLView", "./login/XMLHttpRequestModifier"],
+function(UIComponent, XMLView, XMLHttpRequestModifier) {
 	"use strict";
 	return UIComponent.extend("incentergy.base.Component", {
 
 		metadata : {
 			manifest: "json"
 		},
-
 		init : function() {
 			// call the init function of the parent
 			UIComponent.prototype.init.apply(this, arguments);
@@ -20,6 +19,8 @@ function(UIComponent, XMLView) {
 			this._aUiExtensions = {};
 			
 			this._initModules();
+			this._initLogin();
+			
 
 			// create the views based on the url/hash
 			this.getRouter().initialize();
@@ -66,16 +67,19 @@ function(UIComponent, XMLView) {
 				});
 			}.bind(this));
 		},
+		_initLogin: function() {
+			new XMLHttpRequestModifier(XMLHttpRequest, this);
+		},
 		_subscribeToExtensionMessages : function (sUiExtension) {
 			var oEventBus = sap.ui.getCore().getEventBus();
-			oEventBus.subscribe("incentergy.base.uiExtensions", sUiExtension, function (sChannel, sEventId, sReplyTo) {
+			oEventBus.subscribe("incentergy.base.uiExtensions", sUiExtension, function (sChannel, sEventId, oReplyTo) {
 				if(!(sUiExtension in this._aUiExtensions)) {
 					fnResolve([]);
 				}
 				Promise.all(this._aUiExtensions[sEventId].map(function (sView) {
 					return XMLView.create({"viewName": sView});
 				})).then(function (aViews) {
-					oEventBus.publish("incentergy.base.uiExtensions", sReplyTo, aViews);
+					oEventBus.publish("incentergy.base.uiExtensions", oReplyTo.replyTo, aViews);
 				})
 			}.bind(this));
 		},
