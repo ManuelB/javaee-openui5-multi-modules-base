@@ -1,5 +1,5 @@
-sap.ui.define([ "sap/ui/core/UIComponent", "sap/ui/core/mvc/XMLView", "./login/XMLHttpRequestModifier"],
-function(UIComponent, XMLView, XMLHttpRequestModifier) {
+sap.ui.define([ "sap/ui/core/UIComponent", "sap/ui/core/mvc/XMLView", "./login/XMLHttpRequestModifier", "sap/base/Log"],
+function(UIComponent, XMLView, XMLHttpRequestModifier, Log) {
 	"use strict";
 	return UIComponent.extend("incentergy.base.Component", {
 
@@ -41,9 +41,17 @@ function(UIComponent, XMLView, XMLHttpRequestModifier) {
 							var sManifestUrl = "./"+sModuleName+"-frontend/incentergy/"+sPackageName+"/manifest.json";
 							return fetch(sManifestUrl, {
 								credentials: 'include'
-							}).then(function(response) {
-								return response.json();
-							});
+							}).then(function(oResponse) {
+								if(!oResponse.ok) {
+									Log.error(oResponse.statusCode+" "+oResponse.statusText);
+							        return Promise.resolve({});
+								} else {									
+									return oResponse.json();
+								}
+							}).catch(function(oError) {
+								Log.error(oError);
+						        return Promise.resolve({});
+						    });
 							
 						})).then(function (aManifests) {
 							aManifests.forEach(function (oManifest) {
