@@ -24,7 +24,10 @@
 		</tnt:header>
 		<tnt:sideContent>
 			<tnt:SideNavigation expanded="true" itemSelect="onItemSelect">
-				<tnt:NavigationList items="{path: '/Modules'}">
+				<tnt:NavigationList items="{path: '/Modules',
+			        filters : [
+			            { path : 'Type', operator : 'EQ', value1 : 'Component'}
+			        ]}">
 					<tnt:NavigationListItem text="{Name}" key="{Ney}">
 					</tnt:NavigationListItem>
 				</tnt:NavigationList>

@@ -14,5 +14,6 @@
     <module>backend</module>
     <module>olingo</module>
     <module>jwt</module>
+    <module>rte</module>
   </modules>
 </project>

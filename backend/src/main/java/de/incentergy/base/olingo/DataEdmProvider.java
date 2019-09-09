@@ -44,8 +44,9 @@ public class DataEdmProvider extends EdmProvider {
 	@Override
 	public EntityType getEntityType(FullQualifiedName edmFQName) {
 		return new EntityType().setName("Module")
-				.setProperties(Arrays.asList(new SimpleProperty().setName("Name").setType(EdmSimpleTypeKind.String)
-						.setFacets(new Facets().setNullable(false))))
+				.setProperties(Arrays.asList(new SimpleProperty().setName("Name").setType(EdmSimpleTypeKind.String),
+						new SimpleProperty().setName("Type").setType(EdmSimpleTypeKind.String)
+								.setFacets(new Facets().setNullable(false))))
 				.setKey(new Key().setKeys(Arrays.asList(new PropertyRef().setName("Name"))));
 	}
 

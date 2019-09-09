@@ -99,6 +99,9 @@ sap.ui.define([
 		getBindElementParams: function () {
 			return {};
 		},
+		getPackageName: function() {
+			return this.getEntityName();
+		},
 		getEntityName : function () {
 			throw new Error("getEntityName must be implemented by derived class");
 		}

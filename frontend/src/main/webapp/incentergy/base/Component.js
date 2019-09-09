@@ -34,24 +34,35 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log) {
 					"success": function(oData) {
 						Promise.all(oData.results.map(function (oModule) {
 							var sModuleName = oModule.Name;
-							var sPackageName = sModuleName.replace(/-/g, '');
-							// Register module path
-							jQuery.sap.registerModulePath("incentergy."+sPackageName, "./"+sModuleName+"-frontend/incentergy/"+sPackageName);
 							
-							var sManifestUrl = "./"+sModuleName+"-frontend/incentergy/"+sPackageName+"/manifest.json";
-							return fetch(sManifestUrl, {
-								credentials: 'include'
-							}).then(function(oResponse) {
-								if(!oResponse.ok) {
-									Log.error(oResponse.statusCode+" "+oResponse.statusText);
-							        return Promise.resolve({});
-								} else {									
-									return oResponse.json();
-								}
-							}).catch(function(oError) {
-								Log.error(oError);
-						        return Promise.resolve({});
-						    });
+							if(oModule.Type === "Component") {								
+								var sPackageName = sModuleName.replace(/-/g, '');
+								// Register component path
+								jQuery.sap.registerModulePath("incentergy."+sPackageName, "./"+sModuleName+"-frontend/incentergy/"+sPackageName);
+								
+								var sManifestUrl = "./"+sModuleName+"-frontend/incentergy/"+sPackageName+"/manifest.json";
+								return fetch(sManifestUrl, {
+									credentials: 'include'
+								}).then(function(oResponse) {
+									if(!oResponse.ok) {
+										Log.error(oResponse.statusCode+" "+oResponse.statusText);
+										return Promise.resolve({});
+									} else {									
+										return oResponse.json();
+									}
+								}).catch(function(oError) {
+									Log.error(oError);
+									return Promise.resolve({});
+								});
+							} else if(oModule.Type === "Library") {
+								var sPackageName = sModuleName.replace(/-/g, '.');
+								// Register library path
+								jQuery.sap.registerModulePath("incentergy."+sPackageName, "./"+sModuleName+"-lib/incentergy/"+sPackageName.replace(".", "/"));
+								return Promise.resolve({});
+							} else {
+								Log.error("Found unsupported Module Type: "+oModule.Type);
+								return Promise.resolve({});
+							}
 							
 						})).then(function (aManifests) {
 							aManifests.forEach(function (oManifest) {

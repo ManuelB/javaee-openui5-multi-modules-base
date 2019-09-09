@@ -66,8 +66,11 @@ sap.ui.define([
 			var sEntityName = this.getEntityName();
 			sEntityName = sEntityName[0].toUpperCase() + sEntityName.slice(1);
 			
-			var oContext = this.getOwnerComponent().getModel().createEntry("/"+sEntityName+"s");
+			var oContext = this._createContextFromModel();
 			oDialog.setBindingContext(oContext);
+		},
+		_createContextFromModel: function (sEntityName) {
+			return this.getOwnerComponent().getModel().createEntry("/"+sEntityName+"s")
 		},
 		onSave: function (oEvent) {
 			this.getOwnerComponent().getModel().submitChanges({
