@@ -28,7 +28,7 @@
 			        filters : [
 			            { path : 'Type', operator : 'EQ', value1 : 'Component'}
 			        ]}">
-					<tnt:NavigationListItem text="{Name}" key="{Ney}">
+					<tnt:NavigationListItem text="{Name}" key="{Key}">
 					</tnt:NavigationListItem>
 				</tnt:NavigationList>
 			</tnt:SideNavigation>
@@ -36,7 +36,6 @@
 		<tnt:mainContents>
 			<NavContainer id="navContainer">
 				<pages>
-					
 				</pages>
 			</NavContainer>
 		</tnt:mainContents>

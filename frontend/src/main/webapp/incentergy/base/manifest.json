@@ -73,16 +73,7 @@
 		},
 		"routing": {
 			"config": {
-				"routerClass": "sap.m.routing.Router",
-				"viewType": "XML",
-				"viewPath": "incentergy.base.view",
-				"controlId": "navContainer",
-				"controlAggregation": "pages",
-				"clearTarget": true,
-				"transition": "slide",
-				"bypassed": {
-					"target": "notFound"
-				}
+				"routerClass": "sap.m.routing.Router"
 			},
 			"routes": [ {
 				  "pattern": ":module*:",

@@ -104,6 +104,10 @@ sap.ui.define([
 		},
 		getEntityName : function () {
 			throw new Error("getEntityName must be implemented by derived class");
+		},
+		onExit: function () {
+			this.oRouter.getRoute("master").detachPatternMatched(this._onMatched, this);
+			this.oRouter.getRoute("detail").detachPatternMatched(this._onMatched, this);
 		}
 	});
 }, true);

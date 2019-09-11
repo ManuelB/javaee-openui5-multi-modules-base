@@ -15,11 +15,15 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 							oNavContainer.removeAllPages();
 							
 							var sComponentName = "incentergy."+sPackageName;
-							var oComponent = Component.get(sComponentName);
 							
-							if(oComponent) {
-								oComponent.destroy();
+							if(this._oldComponentContainer) {
+								this._oldComponentContainer.destroy();
 							}
+							
+							// var oComponent = Component.get(sComponentName);
+							// if(oComponent) {
+							//	oComponent.destroy();
+							// }
 							
 							var oContainer = new ComponentContainer({
 								name: sComponentName,
@@ -31,6 +35,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 									id: "incentergy."+sPackageName
 								}
 							});
+							this._oldComponentContainer = oContainer;
 							oNavContainer.addPage(oContainer);
 							oNavContainer.to(oContainer);
 						}

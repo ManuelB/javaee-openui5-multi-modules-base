@@ -2,15 +2,21 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/core/ResizeHandler",
 	"./AbstractController",
-	"sap/f/FlexibleColumnLayout"
-], function (JSONModel, ResizeHandler, AbstractController, FlexibleColumnLayout) {
+	"sap/f/FlexibleColumnLayout",
+	"sap/base/Log"
+], function (JSONModel, ResizeHandler, AbstractController, FlexibleColumnLayout, Log) {
 	"use strict";
 
 	return AbstractController.extend("incentergy.base.view.AbstractAppController", {
 		onInit: function () {
-			this.oRouter = this.getOwnerComponent().getRouter();
-			this.oRouter.attachRouteMatched(this.onRouteMatched, this);
-			ResizeHandler.register(this.getView().byId("fcl"), this._onResize.bind(this));
+			var oComponent = this.getOwnerComponent();
+			if(oComponent) {				
+				this.oRouter = oComponent.getRouter();
+				this.oRouter.attachRouteMatched(this.onRouteMatched, this);
+				ResizeHandler.register(this.getView().byId("fcl"), this._onResize.bind(this));
+			} else {
+				Log.warning("Could not get component for AbstractAppController for entity: "+this.getEntityName());
+			}
 		},
 		onRouteMatched: function (oEvent) {
 			var sRouteName = oEvent.getParameter("name"),

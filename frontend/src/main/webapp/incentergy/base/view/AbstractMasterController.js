@@ -66,7 +66,7 @@ sap.ui.define([
 			var sEntityName = this.getEntityName();
 			sEntityName = sEntityName[0].toUpperCase() + sEntityName.slice(1);
 			
-			var oContext = this._createContextFromModel();
+			var oContext = this._createContextFromModel(sEntityName);
 			oDialog.setBindingContext(oContext);
 		},
 		_createContextFromModel: function (sEntityName) {
