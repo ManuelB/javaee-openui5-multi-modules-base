@@ -44,7 +44,7 @@ sap.ui.define([
 				XMLHttpRequest.prototype.send = function (body) {
 					this._httpRequestBody = body;
 					
-					if(me._sJwtToken) {
+					if(me._sJwtToken && me.isLocalODataModel(this._httpUrl)) {
 						this.setRequestHeader("Authorization", "Bearer "+me._sJwtToken);
 					}
 
@@ -64,6 +64,10 @@ sap.ui.define([
 			}
 
 		});
+		
+		XMLHttpRequestModifier.prototype.isLocalODataModel = function(sUrl) {
+			return sUrl.indexOf(".svc") != -1;
+		};
 
 		/**
 		 * Handles unauthorized (401) XMLHttpRequest
