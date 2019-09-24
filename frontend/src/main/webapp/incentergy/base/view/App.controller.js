@@ -12,13 +12,13 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 		},
 		processModuleParameter: function(sModuleParameter) {
 			// if this is loaded in response for an OAuth grand
-			if(window.opener != null && sModuleParameter.match(/^id_token/)) {
+			if(window.opener != null && sModuleParameter && sModuleParameter.match(/^id_token/)) {
 				window.opener.sap.ui.getCore().getEventBus().publish("incentergy.base.oauth", "token", {
 					"popup": window,
 					"hash": sModuleParameter,
 					"type": "id_token"
 				});
-			} else if (window.parent != null && sModuleParameter.match(/^access_token/)) {
+			} else if (window.parent != null && sModuleParameter && sModuleParameter.match(/^access_token/)) {
 				window.parent.sap.ui.getCore().getEventBus().publish("incentergy.base.oauth", "token", {
 					"popup": window,
 					"hash": sModuleParameter,
