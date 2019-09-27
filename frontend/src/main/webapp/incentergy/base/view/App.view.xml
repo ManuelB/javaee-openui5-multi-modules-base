@@ -15,7 +15,7 @@
 				showProductSwitcher="false"
 				notificationsNumber="0">
 				<f:profile>
-					<f:Avatar initials="UI"/>
+					<f:Avatar src="{JWT>/img}" />
 				</f:profile>
 				<f:searchManager>
 					<f:SearchManager/>

@@ -1,6 +1,6 @@
 sap.ui.define([
 	"sap/ui/base/ManagedObject",
-	"sap/ui/core/Fragment",
+	"sap/ui/core/Fragment"
 ], function (ManagedObject, Fragment) {
 		"use strict";
 		var XMLHttpRequestModifier = ManagedObject.extend("incentergy.base.login.XMLHttpRequestModifier", {
@@ -16,6 +16,10 @@ sap.ui.define([
 				var me = this;
 				
 				this._sJwtToken = window.localStorage._sJwtToken;
+				
+				if(this._sJwtToken) {
+					this.doLogin(this._sJwtToken);
+				}
 				
 				this.oComponent = oComponent;
 
@@ -130,14 +134,24 @@ sap.ui.define([
 				if(bSaveLoginData) {
 					window.localStorage._sJwtToken = sJwtToken;
 				}
+				this.doLogin(sJwtToken);
 				this._oLoginDialog.close();
-				this.fireLoginSuccess();
 			}.bind(this))
 			.catch(function (sError) {
 				var oMessageStrip = this._oLoginDialog.getContent()[0];
 				oMessageStrip.setVisible(true);
 				oMessageStrip.setText(sError);
 			}.bind(this));
+		};
+		
+		XMLHttpRequestModifier.prototype.doLogin = function (sJwtToken) {
+			// eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdCIsImF1ZCI6IiouaW5jZW50ZXJneS5kZSIsImV4cCI6MTU3MjE2NzEyNywianRpIjoiQUZrSDJpMnZpSVRFc0QxVXNZMXZjQSIsImlhdCI6MTU2OTU3NTEyNywibmJmIjoxNTY5NTc1MDA3LCJzdWIiOiI3NjA3NTc2YS0wN2VlLTQzZmUtYTUzYi1kN2I2ZDg0YTVkY2UiLCJlbWFpbCI6ImNocmlzdGlhbkBleGFtcGxlLmNvbSIsImxvZ2luTmFtZSI6ImNocmlzdGlhbiIsImdyb3VwcyI6WyJFbXBsb3llZSJdfQ
+			// {"iss":"https://localhost","aud":"*.incentergy.de","exp":1572167127,"jti":"AFkH2i2viITEsD1UsY1vcA","iat":1569575127,"nbf":1569575007,"sub":"7607576a-07ee-43fe-a53b-d7b6d84a5dce","email":"christian@example.com","loginName":"christian","groups":["Employee"]}
+			var oJwtToken = JSON.parse(atob(sJwtToken.match(/\.(.*)\./)[1]));
+			sap.ui.getCore().getEventBus().publish("incentergy.base.login.XMLHttpRequestModifier", "loginSuccess", oJwtToken);
+			sap.ui.getCore().getModel("JWT").setData(oJwtToken, "JWT");
+			
+			this.fireLoginSuccess();
 		};
 
 		XMLHttpRequestModifier.prototype.exit = function () {

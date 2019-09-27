@@ -1,5 +1,6 @@
-sap.ui.define([ "sap/ui/core/UIComponent", "sap/ui/core/mvc/XMLView", "./login/XMLHttpRequestModifier", "sap/base/Log"],
-function(UIComponent, XMLView, XMLHttpRequestModifier, Log) {
+sap.ui.define([ "sap/ui/core/UIComponent", "sap/ui/core/mvc/XMLView", "./login/XMLHttpRequestModifier", "sap/base/Log",
+	"sap/ui/model/json/JSONModel"],
+function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel) {
 	"use strict";
 	return UIComponent.extend("incentergy.base.Component", {
 
@@ -17,6 +18,11 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log) {
 			// "incentergy.employee.detail": [ "incentergy.performance.employee.goals" ]
 			// }
 			this._aUiExtensions = {};
+			
+			var oJwtModel = new JSONModel();
+			this.setModel(oJwtModel, "JWT");
+			
+			sap.ui.getCore().setModel(oJwtModel,"JWT")
 			
 			this._initModules();
 			this._initLogin();
