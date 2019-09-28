@@ -13,7 +13,7 @@ public class OpenSearchApplication extends Application {
 	public Set<Class<?>> getClasses() {
 		Set<Class<?>> set = new HashSet<Class<?>>();
 		set.add(Search.class);
-		// set.add(JWTAuthFilter.class);
+		set.add(JWTAuthFilter.class);
         return set;
     }
 }

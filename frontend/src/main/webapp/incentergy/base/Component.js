@@ -98,7 +98,10 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel) {
 			}.bind(this));
 		},
 		_initLogin: function() {
-			new XMLHttpRequestModifier(XMLHttpRequest, this);
+			this._xMLHttpRequestModifier = new XMLHttpRequestModifier(XMLHttpRequest, this);
+		},
+		getJwtToken: function() {
+			return this._xMLHttpRequestModifier.getJwtToken();
 		},
 		_subscribeToExtensionMessages : function (sUiExtension) {
 			var oEventBus = sap.ui.getCore().getEventBus();

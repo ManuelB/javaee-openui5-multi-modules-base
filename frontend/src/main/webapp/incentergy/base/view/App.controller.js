@@ -85,9 +85,10 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 			var q = oEvent.getParameter("query");
 			var oRouter = this.getOwnerComponent().getRouter();
 			Promise.all(this.getOwnerComponent().getOpenSearchUrls().map(function (sUrl) {
-				return fetch(sUrl+q, {"headers": {"Accept": "application/xml"}})
+				return fetch(sUrl+q, {"headers": {"Accept": "application/xml", "Authorization": "Bearer "+this.getOwnerComponent().getJwtToken()}})
 				    .then(response => response.text())
-		        	.then(str => (new window.DOMParser()).parseFromString(str, "text/xml")); })).then(function (aDocuments) {
+		        	.then(str => (new window.DOMParser()).parseFromString(str, "text/xml")); }.bind(this))
+		    ).then(function (aDocuments) {
 		        		aDocuments.forEach(function (oDocument) {
 		        			Array.from(oDocument.getElementsByTagName('entry')).forEach(function (oEntry) {
 		        				var sUrl = oEntry.getElementsByTagName('id')[0].textContent;
@@ -100,10 +101,10 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 		        					"press": function () {
 		        						oRouter.navTo("module", {"module*": sUrl});
 		        					}
-		        				}));
-		        			})
-		        		});
+			        			}));
+			        		})
 		        	});
+		    });
 		}
 	});
 

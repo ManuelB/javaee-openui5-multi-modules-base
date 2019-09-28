@@ -69,6 +69,10 @@ sap.ui.define([
 
 		});
 		
+		XMLHttpRequestModifier.prototype.getJwtToken = function() {			
+			return this._sJwtToken;
+		};
+		
 		XMLHttpRequestModifier.prototype.isLocalModel = function(sUrl) {
 			return sUrl.indexOf(".svc") != -1 || sUrl.indexOf("opensearch") != -1 ;
 		};
