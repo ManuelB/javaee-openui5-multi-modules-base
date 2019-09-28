@@ -15,5 +15,6 @@
     <module>olingo</module>
     <module>jwt</module>
     <module>rte</module>
+    <module>opensearch</module>
   </modules>
 </project>

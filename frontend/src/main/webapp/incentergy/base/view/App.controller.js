@@ -1,4 +1,4 @@
-sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "sap/ui/core/Component"], function (Controller, ComponentContainer, Component) {
+sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "sap/ui/core/Component", "sap/m/StandardListItem"], function (Controller, ComponentContainer, Component, StandardListItem) {
 	"use strict";
 
 	return Controller.extend("incentergy.base.view.App", {
@@ -74,10 +74,36 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 			this.getOwnerComponent().getRouter().navTo("module", {"module*": sPackageName});
 			
 		},
-
 		onMenuButtonPress : function() {
 			var toolPage = this.byId("toolPage");
 			toolPage.setSideExpanded(!toolPage.getSideExpanded());
+		},
+		onSearch: function(oEvent) {
+			this.byId("searchResult").openBy(oEvent.getSource()._oSearch._getSearchField());
+			var oList = this.byId("searchResultList");
+			oList.removeAllItems();
+			var q = oEvent.getParameter("query");
+			var oRouter = this.getOwnerComponent().getRouter();
+			Promise.all(this.getOwnerComponent().getOpenSearchUrls().map(function (sUrl) {
+				return fetch(sUrl+q, {"headers": {"Accept": "application/xml"}})
+				    .then(response => response.text())
+		        	.then(str => (new window.DOMParser()).parseFromString(str, "text/xml")); })).then(function (aDocuments) {
+		        		aDocuments.forEach(function (oDocument) {
+		        			Array.from(oDocument.getElementsByTagName('entry')).forEach(function (oEntry) {
+		        				var sUrl = oEntry.getElementsByTagName('id')[0].textContent;
+		        				var aSummaries = oEntry.getElementsByTagName('summary');
+		        				var aTitles =  oEntry.getElementsByTagName('title');
+		        				oList.addItem(new StandardListItem({
+		        					"title": aTitles.length > 0 ? aTitles[0].textContent : "No Title",
+		        					"description": aSummaries.lenght > 0 ? aSummaries[0].textContent : "",
+		        					"type": "Active", 
+		        					"press": function () {
+		        						oRouter.navTo("module", {"module*": sUrl});
+		        					}
+		        				}));
+		        			})
+		        		});
+		        	});
 		}
 	});
 

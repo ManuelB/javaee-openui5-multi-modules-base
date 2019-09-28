@@ -48,7 +48,7 @@ sap.ui.define([
 				XMLHttpRequest.prototype.send = function (body) {
 					this._httpRequestBody = body;
 					
-					if(me._sJwtToken && me.isLocalODataModel(this._httpUrl)) {
+					if(me._sJwtToken && me.isLocalModel(this._httpUrl)) {
 						this.setRequestHeader("Authorization", "Bearer "+me._sJwtToken);
 					}
 
@@ -69,8 +69,8 @@ sap.ui.define([
 
 		});
 		
-		XMLHttpRequestModifier.prototype.isLocalODataModel = function(sUrl) {
-			return sUrl.indexOf(".svc") != -1;
+		XMLHttpRequestModifier.prototype.isLocalModel = function(sUrl) {
+			return sUrl.indexOf(".svc") != -1 || sUrl.indexOf("opensearch") != -1 ;
 		};
 
 		/**

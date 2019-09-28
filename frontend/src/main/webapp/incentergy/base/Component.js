@@ -19,6 +19,8 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel) {
 			// }
 			this._aUiExtensions = {};
 			
+			this._aOpenSearchUrls = [];
+			
 			var oJwtModel = new JSONModel();
 			this.setModel(oJwtModel, "JWT");
 			
@@ -82,6 +84,9 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel) {
 										this._aUiExtensions[sUiExtension] = this._aUiExtensions[sUiExtension].concat(oManifest["incentergy.base"]["uiExtensions"][sUiExtension]);
 									}
 								}
+								if("incentergy.base.opensearch" in oManifest && "url" in oManifest["incentergy.base.opensearch"]) {
+									this._aOpenSearchUrls.push(oManifest["incentergy.base.opensearch"]["url"]);
+								}
 								fnResolve();
 							}.bind(this));
 						}.bind(this));
@@ -107,6 +112,9 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel) {
 					oEventBus.publish("incentergy.base.uiExtensions", oReplyTo.replyTo, aViews);
 				})
 			}.bind(this));
+		},
+		getOpenSearchUrls: function() {
+			return this._aOpenSearchUrls;
 		},
 		modulesLoaded : function () {
 			return this.pModulesLoaded;

@@ -1,34 +1,32 @@
-<mvc:View height="100%"
-	xmlns:mvc="sap.ui.core.mvc"
-	xmlns="sap.m"
-	xmlns:f="sap.f"
-	xmlns:tnt="sap.tnt" controllerName="incentergy.base.view.App">
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m" xmlns:f="sap.f" xmlns:tnt="sap.tnt"
+	controllerName="incentergy.base.view.App">
 	<tnt:ToolPage id="toolPage">
 		<tnt:header>
 			<f:ShellBar title="Java EE OpenUI5 Module System"
-				secondTitle="Running on wildfly"
-				showMenuButton="true"
-				homeIcon="./img/logo_ui5.png"
-				showCopilot="false"
-				showNotifications="false"
-				menuButtonPressed="onMenuButtonPress"
-				showProductSwitcher="false"
-				notificationsNumber="0">
+				secondTitle="Running on wildfly" showMenuButton="true"
+				homeIcon="./img/logo_ui5.png" showCopilot="false"
+				showNotifications="false" menuButtonPressed="onMenuButtonPress"
+				showProductSwitcher="false" notificationsNumber="0">
 				<f:profile>
 					<f:Avatar src="{JWT>/img}" />
 				</f:profile>
 				<f:searchManager>
-					<f:SearchManager/>
+					<f:SearchManager enableSuggestions="true"
+						search="onSearch" />
 				</f:searchManager>
 			</f:ShellBar>
 		</tnt:header>
 		<tnt:sideContent>
-			<tnt:SideNavigation expanded="true" itemSelect="onItemSelect">
-				<tnt:NavigationList items="{path: '/Modules',
+			<tnt:SideNavigation expanded="true"
+				itemSelect="onItemSelect">
+				<tnt:NavigationList
+					items="{path: '/Modules',
 			        filters : [
 			            { path : 'Type', operator : 'EQ', value1 : 'Component'}
 			        ]}">
-					<tnt:NavigationListItem text="{Name}" key="{Key}">
+					<tnt:NavigationListItem text="{Name}"
+						key="{Key}">
 					</tnt:NavigationListItem>
 				</tnt:NavigationList>
 			</tnt:SideNavigation>
@@ -39,5 +37,13 @@
 				</pages>
 			</NavContainer>
 		</tnt:mainContents>
+		<tnt:dependents>
+			<ResponsivePopover id="searchResult"
+				placement="Bottom">
+				<List id="searchResultList">
+
+				</List>
+			</ResponsivePopover>
+		</tnt:dependents>
 	</tnt:ToolPage>
 </mvc:View>
