@@ -16,5 +16,6 @@
     <module>jwt</module>
     <module>rte</module>
     <module>opensearch</module>
+    <module>openui5ol</module>
   </modules>
 </project>

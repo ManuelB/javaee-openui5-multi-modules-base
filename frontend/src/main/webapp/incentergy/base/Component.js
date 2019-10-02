@@ -64,6 +64,11 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel) {
 								});
 							} else if(oModule.Type === "Library") {
 								var sPackageName = sModuleName.replace(/-/g, '.');
+								if(sPackageName == "base.openui5ol") {
+									sPackageName = "ol";
+									jQuery.sap.registerModulePath("ol", "https://cdnjs.cloudflare.com/ajax/libs/ol3/4.6.5/ol");
+									
+								}
 								// Register library path
 								jQuery.sap.registerModulePath("incentergy."+sPackageName, "./"+sModuleName+"-lib/incentergy/"+sPackageName.replace(".", "/"));
 								return Promise.resolve({});
