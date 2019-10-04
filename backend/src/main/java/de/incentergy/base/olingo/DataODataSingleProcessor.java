@@ -83,19 +83,19 @@ public class DataODataSingleProcessor extends ODataSingleProcessor {
 
 			Set<ObjectName> appsAndLibs = new HashSet<>();
 
-			ObjectName jbossAsObjectNameApps = new ObjectName("jboss.as:deployment=*-frontend.war");
+			ObjectName jbossAsObjectNameApps = new ObjectName("jboss.as:deployment=*-frontend*");
 			appsAndLibs.addAll(mbeanServerConnection.queryNames(jbossAsObjectNameApps, null));
 
-			ObjectName jbossAsObjectName = new ObjectName("jboss.as:deployment=*-lib.war");
+			ObjectName jbossAsObjectName = new ObjectName("jboss.as:deployment=*-lib*");
 			appsAndLibs.addAll(mbeanServerConnection.queryNames(jbossAsObjectName, null));
 
 			for (ObjectName deployedApplication : appsAndLibs) {
 				try {
 					Object moduleName = mbeanServerConnection.getAttribute(deployedApplication, "name");
-					if (moduleName != null && !moduleName.toString().equals("base-frontend.war")) {
+					if (moduleName != null && !moduleName.toString().startsWith("base-frontend")) {
 						Map<String, Object> map = new HashMap<>();
-						map.put("Type", moduleName.toString().contains("-lib.war") ? "Library" : "Component");
-						map.put("Name", moduleName.toString().replace("-frontend.war", "").replace("-lib.war", ""));
+						map.put("Type", moduleName.toString().contains("-lib") ? "Library" : "Component");
+						map.put("Name", moduleName.toString().replace("-frontend", "").replace("-lib", "").replace(".war", ""));
 						list.add(map);
 					}
 				} catch (AttributeNotFoundException | InstanceNotFoundException | MBeanException
