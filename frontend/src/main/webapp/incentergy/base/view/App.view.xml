@@ -1,5 +1,5 @@
 <mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc"
-	xmlns="sap.m" xmlns:f="sap.f" xmlns:tnt="sap.tnt"
+	xmlns="sap.m" xmlns:f="sap.f" xmlns:cards="sap.f.cards" xmlns:tnt="sap.tnt" xmlns:vega="incentergy.base.vega"
 	controllerName="incentergy.base.view.App">
 	<tnt:ToolPage id="toolPage">
 		<tnt:header>
@@ -34,6 +34,27 @@
 		<tnt:mainContents>
 			<NavContainer id="navContainer">
 				<pages>
+					<f:GridContainer id="gridContainer"
+						class="sapUiSmallMargin" items="{Cards>/}">
+						<f:layout>
+							<f:GridContainerSettings rowSize="8rem"
+								columnSize="20rem" gap="1rem" />
+						</f:layout>
+						<f:layoutXS>
+							<f:GridContainerSettings rowSize="7rem"
+								columnSize="7rem" gap="1rem" />
+						</f:layoutXS>
+						<f:items>
+							<f:Card>
+								<f:header>
+									<cards:Header title="{Cards>header/title}" subtitle="{Cards>header/subTitle}" iconSrc="{Cards>header/icon/src}" statusText="{Cards>header/status/text}"></cards:Header>
+								</f:header>
+								<f:content>
+									<vega:Vega content="{Cards>content}" />
+								</f:content>
+							</f:Card>
+						</f:items>
+					</f:GridContainer>
 				</pages>
 			</NavContainer>
 		</tnt:mainContents>

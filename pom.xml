@@ -15,6 +15,7 @@
     <module>olingo</module>
     <module>jwt</module>
     <module>rte</module>
+    <module>vega</module>
     <module>opensearch</module>
     <module>openui5ol</module>
   </modules>

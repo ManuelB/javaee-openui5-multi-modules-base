@@ -1,0 +1,48 @@
+{
+	"_version": "1.1.0",
+	"sap.app": {
+		"_version": "1.1.0",
+		"id": "incentergy.base.vega",
+		"type": "library",
+		"title": "Vega integration for UI5",
+		"description": "This implements a integration between the Vega Lite Library and UI5",
+		"applicationVersion": {
+			"version": "1.0.0"
+		}
+	},
+	"sap.ui": {
+		"_version": "1.1.0",
+		"technology": "UI5",
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": [
+			"sap_fiori_3"
+		]
+	},
+	"sap.ui5": {
+		"_version": "1.1.0",
+		"resources": {
+			"js": [{
+				"uri": "https://cdn.jsdelivr.net/npm/vega@5.6.0",
+				"version": "5.6.0"
+			},{
+				"uri": "https://cdn.jsdelivr.net/npm/vega-lite@4.0.0-beta.8",
+				"version": "4.0.0-beta.8"
+			},{
+				"uri": "https://cdn.jsdelivr.net/npm/vega-embed@5.1.3",
+				"version": "5.1.3"
+			}]
+		},
+		"dependencies": {
+			"minUI5Version": "1.68.1",
+			"libs": {
+				"sap.ui.core": {
+					
+				}
+			}
+		}
+	}
+}
