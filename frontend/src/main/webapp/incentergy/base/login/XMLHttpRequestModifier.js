@@ -1,7 +1,8 @@
 sap.ui.define([
 	"sap/ui/base/ManagedObject",
-	"sap/ui/core/Fragment"
-], function (ManagedObject, Fragment) {
+	"sap/ui/core/Fragment",
+	"sap/ui/model/resource/ResourceModel"
+], function (ManagedObject, Fragment, ResourceModel) {
 		"use strict";
 		var XMLHttpRequestModifier = ManagedObject.extend("incentergy.base.login.XMLHttpRequestModifier", {
 			metadata: {
@@ -106,9 +107,9 @@ sap.ui.define([
 				Fragment.load({
 					"name": "incentergy.base.login.LoginDialog",
 					"controller": this
-				}).then(function (oLoginDialog) {					
+				}).then(function (oLoginDialog) {				
 					this._oLoginDialog = oLoginDialog;
-					this.oComponent.getRootControl().addDependent(this._oLoginDialog);
+					this._oLoginDialog.setModel(new ResourceModel({"bundleName": "incentergy.base.i18n.i18n"}), "i18n");
 					this._oLoginDialog.open();
 				}.bind(this));
 			} else {				
