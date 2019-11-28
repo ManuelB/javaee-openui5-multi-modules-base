@@ -118,11 +118,26 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
      * @param context
      * @return the AuthenticationStatus to notify the container
      */
-    private AuthenticationStatus validateToken(String token, HttpMessageContext context) {
+    @SuppressWarnings("unchecked")
+	private AuthenticationStatus validateToken(String token, HttpMessageContext context) {
         try {
             if (validateToken(token)) {
-                JWTCredential credential = getCredential(token);
-                return context.notifyContainerAboutLogin(credential.getPrincipal(), credential.getGroups());
+            	 Claims claims = Jwts.parser()
+                         .setSigningKey(secretKey)
+                         .parseClaimsJws(token)
+                         .getBody();
+
+                 Set<String> groups = new HashSet<String>();
+                 
+                 try {
+                 	groups
+                         = ((List<String>)claims.get("groups"))
+                                 .stream()
+                                 .collect(Collectors.toSet());
+                 } catch(Exception e) {
+                 	log.log(Level.WARNING, "Could not get groups from JWT token: "+token, e);
+                 }
+                return context.notifyContainerAboutLogin(claims.getSubject(), groups);
             }
             // if token invalid, response with unauthorized status
             return context.responseUnauthorized();
@@ -132,27 +147,6 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
         }
     }
     
-    @SuppressWarnings("unchecked")
-	public JWTCredential getCredential(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody();
-
-        Set<String> groups = new HashSet<String>();
-        
-        try {
-        	groups
-                = ((List<String>)claims.get("groups"))
-                        .stream()
-                        .collect(Collectors.toSet());
-        } catch(Exception e) {
-        	log.log(Level.WARNING, "Could not get groups from JWT token: "+token, e);
-        }
-
-        return new JWTCredential(claims.getSubject(), groups);
-    }
-
     /**
      * To extract the JWT from Authorization HTTP header
      *
