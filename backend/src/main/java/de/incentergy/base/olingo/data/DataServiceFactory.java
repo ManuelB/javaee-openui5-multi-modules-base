@@ -1,4 +1,4 @@
-package de.incentergy.base.olingo;
+package de.incentergy.base.olingo.data;
 
 import org.apache.olingo.odata2.api.ODataService;
 import org.apache.olingo.odata2.api.ODataServiceFactory;

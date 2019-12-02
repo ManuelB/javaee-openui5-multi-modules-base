@@ -21,12 +21,20 @@
 			<tnt:SideNavigation expanded="true"
 				itemSelect="onItemSelect">
 				<tnt:NavigationList
-					items="{path: '/Modules',
+					items="{path: 'Menu>/NavigationListItems',
+			        sorter: {
+			            path: 'Sort'
+			        },
 			        filters : [
-			            { path : 'Type', operator : 'EQ', value1 : 'Component'}
-			        ]}">
-					<tnt:NavigationListItem text="{Name}"
-						key="{Key}">
+			            { path : 'TopLevelItem', operator : 'EQ', value1 : true}
+			        ],
+			        templateShareable: false
+			        }">
+					<tnt:NavigationListItem text="{Menu>Text}"
+						key="{Menu>Id}" items="{path: 'Menu>Children', templateShareable: false}">
+						<tnt:NavigationListItem text="{Menu>Text}"
+							key="{Menu>Id}">
+						</tnt:NavigationListItem>
 					</tnt:NavigationListItem>
 				</tnt:NavigationList>
 			</tnt:SideNavigation>

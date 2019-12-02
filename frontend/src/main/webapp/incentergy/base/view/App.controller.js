@@ -68,10 +68,9 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 		onItemSelect : function(oEvent) {
 			var oItem = oEvent.getParameter('item');
 			
-			var sModuleName = oItem.getBindingContext().getProperty("Name");
-			var sPackageName = sModuleName.replace(/-/g, '');
+			var sRoute = oItem.getBindingContext("Menu").getProperty("Route");
 			
-			this.getOwnerComponent().getRouter().navTo("module", {"module*": sPackageName});
+			this.getOwnerComponent().getRouter().navTo("module", {"module*": sRoute});
 			
 		},
 		onMenuButtonPress : function() {

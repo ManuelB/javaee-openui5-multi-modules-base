@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://java.sun.com/xml/ns/persistence">
+	<persistence-unit name="menu">
+		<properties>
+			<property name="javax.persistence.schema-generation.database.action"
+				value="drop-and-create" />
+			<!-- Bind entity manager factory to JNDI at java:jboss/careerEntityManagerFactory -->
+			<property name="jboss.entity.manager.factory.jndi.name"
+				value="java:/menuEntityManagerFactory" />
+			<property name="jboss.entity.manager.jndi.name" value="java:/menuEntityManager" />
+			<!-- prevents: failed to lazily initialize a collection of -->
+			<!-- role: de.incentergy.career.entities.Career.addresses, -->
+			<!--  could not initialize proxy - no Session -->
+			<!--  http://localhost:8080/career-backend/Data.svc/Careers?$expand=Addresses -->
+            <property name="hibernate.enable_lazy_load_no_trans" value="true"/>
+		</properties>
+	</persistence-unit>
+</persistence>

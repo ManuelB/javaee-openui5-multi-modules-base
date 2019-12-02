@@ -1,4 +1,4 @@
-package de.incentergy.base.olingo;
+package de.incentergy.base.olingo.data;
 
 import java.util.Set;
 

@@ -16,6 +16,13 @@
 				"settings": {
 					"odataVersion": "2.0"
 				}
+			},
+			"Menu.svc": {
+				"uri": "../../base-backend/Menu.svc?sap-context-token=1",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
 			}
 		}
 	},
@@ -65,6 +72,13 @@
 			},
 			"": {
 				"dataSource": "Data.svc",
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultBindingMode": "TwoWay"
+				}
+			},
+			"Menu": {
+				"dataSource": "Menu.svc",
 				"type": "sap.ui.model.odata.v2.ODataModel",
 				"settings": {
 					"defaultBindingMode": "TwoWay"
