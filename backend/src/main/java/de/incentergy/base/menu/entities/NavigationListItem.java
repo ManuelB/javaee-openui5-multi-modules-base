@@ -2,10 +2,8 @@ package de.incentergy.base.menu.entities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,14 +14,22 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.CascadeType;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, property = "xsi:type")
 @Entity
 public class NavigationListItem {
 
@@ -33,12 +39,13 @@ public class NavigationListItem {
 	private String id = UUID.randomUUID().toString();
 
 	@ManyToOne()
+	@XmlIDREF
 	private NavigationListItem parent;
 
 	@OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<NavigationListItem> children = new ArrayList<>();
 
-	@OneToMany(mappedBy = "navigationListItem", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "navigationListItem", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@MapKeyColumn(name = "locale")
 	private Map<String, NavigationListItemLocalized> navigationListItemLocalized = new HashMap<>();
 
@@ -53,6 +60,9 @@ public class NavigationListItem {
 	
 	private Boolean topLevelItem = true;
 
+	@XmlID
+	// required by Jackson
+	@XmlAttribute(name = "id")
 	public String getId() {
 		return id;
 	}
@@ -61,6 +71,7 @@ public class NavigationListItem {
 		this.id = id;
 	}
 
+	@XmlIDREF
 	public NavigationListItem getParent() {
 		return parent;
 	}
@@ -85,6 +96,7 @@ public class NavigationListItem {
 		this.navigationListItemLocalized = navigationListItemLocalized;
 	}
 
+	@XmlTransient
 	public String getText() {
 		NavigationListItemLocalized nlil = navigationListItemLocalized.get(getCurrentLocale());
 		return nlil == null ? null : nlil.getText();
@@ -129,8 +141,13 @@ public class NavigationListItem {
 		this.topLevelItem = topLevelItem;
 	}
 
+	@XmlTransient
 	public String getCurrentLocale() {
 		BeanManager beanManager = getBeanManager();
+		if(beanManager == null) {
+			log.warning("Bean Manager not found using user.language");
+			return System.getProperty("user.language");
+		}
 		@SuppressWarnings("unchecked")
 		Bean<HttpServletRequest> bean = (Bean<HttpServletRequest>) beanManager.getBeans(HttpServletRequest.class)
 				.iterator().next();
@@ -145,6 +162,7 @@ public class NavigationListItem {
 		return acceptLanguage != null && acceptLanguage.length() > 2 ? acceptLanguage.substring(0, 2) : "en";
 	}
 
+	@XmlTransient
 	public BeanManager getBeanManager() {
 		try {
 			InitialContext initialContext = new InitialContext();

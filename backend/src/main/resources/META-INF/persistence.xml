@@ -4,6 +4,7 @@
 	xsi:schemaLocation="
         http://java.sun.com/xml/ns/persistence">
 	<persistence-unit name="menu">
+	
 		<properties>
 			<property name="javax.persistence.schema-generation.database.action"
 				value="drop-and-create" />

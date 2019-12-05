@@ -1,8 +1,5 @@
 package de.incentergy.base.menu;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import de.incentergy.base.menu.entities.NavigationListItem;
 import de.incentergy.base.menu.entities.NavigationListItemLocalized;
 
