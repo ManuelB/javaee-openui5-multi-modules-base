@@ -1,8 +1,10 @@
 sap.ui.define([
 	"sap/ui/base/ManagedObject",
 	"sap/ui/core/Fragment",
-	"sap/ui/model/resource/ResourceModel"
-], function (ManagedObject, Fragment, ResourceModel) {
+	"sap/ui/model/resource/ResourceModel",
+	"sap/ui/core/routing/HashChanger",
+	"sap/ui/thirdparty/hasher"
+], function (ManagedObject, Fragment, ResourceModel, HashChanger, hasher) {
 		"use strict";
 		var XMLHttpRequestModifier = ManagedObject.extend("incentergy.base.login.XMLHttpRequestModifier", {
 			metadata: {
@@ -157,6 +159,19 @@ sap.ui.define([
 			sap.ui.getCore().getModel("JWT").setData(oJwtToken, "JWT");
 			
 			this.fireLoginSuccess();
+			
+			var fnRethrowHash = function () {
+				var sHash = hasher.getHash();
+				HashChanger.getInstance().createRouterHashChanger().fireEvent("hashChanged", {
+					newHash : sHash,
+					oldHash : sHash
+				});				
+				oCore.detachEvent("UIUpdated", fnRethrowHash);
+			}.bind(this);
+			
+			var oCore = sap.ui.getCore();
+			// Rethrow hash change event to trigger any routes after the login
+			oCore.attachEvent("UIUpdated", fnRethrowHash);
 		};
 
 		XMLHttpRequestModifier.prototype.exit = function () {

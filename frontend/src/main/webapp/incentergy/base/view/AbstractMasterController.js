@@ -13,6 +13,13 @@ sap.ui.define([
 	return AbstractController.extend("incentergy.base.view.AbstractMasterController", {
 		onInit: function () {
 			this.oRouter = this.getOwnerComponent().getRouter();
+			
+			this.oRouter.attachRouteMatched(function(oEvent) {
+				if(oEvent.getParameter("name") == "add") {
+					this.onRouteAddMatched(oEvent);
+				}
+			}.bind(this));
+			
 			this._bDescendingSort = false;
 		},
 		onListItemPress: function (oEvent) {
@@ -34,8 +41,10 @@ sap.ui.define([
 
 			this.getView().byId(this.getEntityName()+"Table").getBinding("items").filter(oTableSearchState, "Application");
 		},
-
 		onAdd: function (oEvent) {
+			this.oRouter.navTo("add");
+		},
+		onRouteAddMatched: function(oEvent) {
 			var oView = this.getView();
 
 			// create dialog lazily

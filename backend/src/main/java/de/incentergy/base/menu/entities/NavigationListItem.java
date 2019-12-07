@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -59,6 +58,8 @@ public class NavigationListItem {
 	private Double sort = 0.0;
 	
 	private Boolean topLevelItem = true;
+	
+	private String icon;
 
 	@XmlID
 	// required by Jackson
@@ -139,6 +140,14 @@ public class NavigationListItem {
 
 	public void setTopLevelItem(Boolean topLevelItem) {
 		this.topLevelItem = topLevelItem;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 	@XmlTransient

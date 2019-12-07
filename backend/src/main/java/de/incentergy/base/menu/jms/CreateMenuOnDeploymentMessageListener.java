@@ -54,7 +54,7 @@ public class CreateMenuOnDeploymentMessageListener implements MessageListener {
 						new Object[] { deploymentEvent.getLifecycle(), deploymentEvent.getApplicationName() });
 				// post deployment create the necessary menu entries
 				if (deploymentEvent.getLifecycle() == Lifecycle.POST_DEPLOYMENT) {
-					deploymentEvent.getNavigationListItemList().getItems().stream().forEach(em::persist);
+					deploymentEvent.getNavigationListItemList().getItems().stream().forEach(em::merge);
 					// pre undeployment delete the menu entries
 				} else if (deploymentEvent.getLifecycle() == Lifecycle.PRE_UNDEPLOYMENT) {
 					deploymentEvent.getNavigationListItemList().getItems().stream()

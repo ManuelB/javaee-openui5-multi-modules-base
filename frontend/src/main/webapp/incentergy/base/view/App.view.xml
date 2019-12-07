@@ -31,7 +31,7 @@
 			        templateShareable: false
 			        }">
 					<tnt:NavigationListItem text="{Menu>Text}"
-						key="{Menu>Id}" items="{path: 'Menu>Children', templateShareable: false}">
+						key="{Menu>Id}" icon="{Menu>Icon}" items="{path: 'Menu>Children', templateShareable: false}" expanded="false">
 						<tnt:NavigationListItem text="{Menu>Text}"
 							key="{Menu>Id}">
 						</tnt:NavigationListItem>

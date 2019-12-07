@@ -96,11 +96,30 @@ public class MenuSupportSingelton {
 												.add("navigationListItem", navigationItem.getString("id")).build());
 							}
 
-							JsonObject javaNavigationItem = Json.createObjectBuilder().add("xsi:type", ".NavigationListItem")
-									.add("id", navigationItem.getString("id"))
+							JsonObject javaNavigationItem = Json.createObjectBuilder()
+									.add("xsi:type", ".NavigationListItem").add("id", navigationItem.getString("id"))
 									.add("children", Json.createArrayBuilder().build())
-									.add("navigationListItemLocalized", languages).add("route", navigationItem.getString("route"))
-									.add("topLevelItem", JsonValue.TRUE).build();
+									.add("parent",
+											navigationItem.containsKey("parent")
+													? navigationItem.getJsonString("parent")
+													: JsonValue.NULL)
+									.add("navigationListItemLocalized", languages)
+									.add("route",
+											navigationItem.containsKey("route") ? navigationItem.getJsonString("route")
+													: JsonValue.NULL)
+									.add("topLevelItem", navigationItem.getBoolean("topLevelItem", true))
+									.add("sort",
+											navigationItem.containsKey("sort") ? navigationItem.getJsonNumber("sort")
+													: JsonValue.NULL)
+									.add("roleAllowed",
+											navigationItem.containsKey("roleAllowed")
+													? navigationItem.getJsonString("roleAllowed")
+													: JsonValue.NULL)
+									.add("icon",
+											navigationItem.containsKey("icon")
+													? navigationItem.getJsonString("icon")
+													: JsonValue.NULL)
+									.build();
 
 							navigationListItemListItems.add(javaNavigationItem);
 						}

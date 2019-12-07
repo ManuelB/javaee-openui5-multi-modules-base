@@ -37,19 +37,21 @@ sap.ui.define(["sap/ui/core/Control", "sap/ui/dom/includeScript", "sap/base/Log"
 					}
 					try {
 						var oContent = JSON.parse(this.getContent());
-						vegaEmbed('#'+this.getId(), oContent, {
-							loader: vega.loader({
-								"http": {
-									"headers": {
-								      "Authorization": "Bearer "+sap.ui.getCore().getComponent(this._sOwnerId).getJwtToken(),
-								      "Accept": "application/json"
-								    }
-								}
-							})
-						}).then(function(result) {
-						    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+						if(document.getElementById(this.getId())) {
+							vegaEmbed('#'+this.getId(), oContent, {
+								loader: vega.loader({
+									"http": {
+										"headers": {
+									      "Authorization": "Bearer "+sap.ui.getCore().getComponent(this._sOwnerId).getJwtToken(),
+									      "Accept": "application/json"
+									    }
+									}
+								})
+						    }).then(function(result) {
+						      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
 							
-						  }).catch(console.error);
+						    }).catch(console.error);
+					    }
 					} catch(e) {
 						Log.error("Could not render vega card: "+e);
 					}
