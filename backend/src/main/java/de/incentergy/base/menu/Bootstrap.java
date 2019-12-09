@@ -15,6 +15,6 @@ public class Bootstrap {
 
 	@PostConstruct
 	public void init() {
-		em.persist(Data.createNavigationListItem());
+		// em.persist(Data.createNavigationListItem());
 	}
 }

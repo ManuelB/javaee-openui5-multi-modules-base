@@ -96,7 +96,7 @@ public class MenuSupportSingelton {
 												.add("navigationListItem", navigationItem.getString("id")).build());
 							}
 
-							JsonObject javaNavigationItem = Json.createObjectBuilder()
+							JsonObjectBuilder javaNavigationItemBuilder = Json.createObjectBuilder()
 									.add("xsi:type", ".NavigationListItem").add("id", navigationItem.getString("id"))
 									.add("children", Json.createArrayBuilder().build())
 									.add("parent",
@@ -111,17 +111,20 @@ public class MenuSupportSingelton {
 									.add("sort",
 											navigationItem.containsKey("sort") ? navigationItem.getJsonNumber("sort")
 													: JsonValue.NULL)
-									.add("roleAllowed",
-											navigationItem.containsKey("roleAllowed")
-													? navigationItem.getJsonString("roleAllowed")
-													: JsonValue.NULL)
+									
 									.add("icon",
 											navigationItem.containsKey("icon")
 													? navigationItem.getJsonString("icon")
-													: JsonValue.NULL)
-									.build();
+													: JsonValue.NULL);
+							
+							if(navigationItem.containsKey("roleAllowed")) {
+								javaNavigationItemBuilder.add("roleAllowed",
+									navigationItem.containsKey("roleAllowed")
+											? navigationItem.getJsonString("roleAllowed")
+											: JsonValue.NULL);
+							}
 
-							navigationListItemListItems.add(javaNavigationItem);
+							navigationListItemListItems.add(javaNavigationItemBuilder.build());
 						}
 					} else {
 						log.log(Level.WARNING, "sap.ui5/routing/routes contains non objects: {0}", jsonValue);

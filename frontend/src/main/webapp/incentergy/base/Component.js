@@ -37,9 +37,10 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel, ManagedOb
 			this._initModules();
 			this._initLogin();
 			
-
-			// create the views based on the url/hash
-			this.getRouter().initialize();
+			this.modulesLoaded().then(function () {				
+				// create the views based on the url/hash
+				this.getRouter().initialize();
+			}.bind(this));
 
 		},
 		_initModules: function() {

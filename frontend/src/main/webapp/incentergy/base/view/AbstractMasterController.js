@@ -69,11 +69,13 @@ sap.ui.define([
 		getEntityName : function () {
 			throw new Error("getEntityName must be implemented by derived class");
 		},
-		_openCreateDialog: function (oDialog) {
+		_openCreateDialog: function (oDialog, sEntityName) {
 			oDialog.open();
 			
-			var sEntityName = this.getEntityName();
-			sEntityName = sEntityName[0].toUpperCase() + sEntityName.slice(1);
+			if(sEntityName === undefined) {				
+				sEntityName = this.getEntityName();
+				sEntityName = sEntityName[0].toUpperCase() + sEntityName.slice(1);
+			}
 			
 			var oContext = this._createContextFromModel(sEntityName);
 			oDialog.setBindingContext(oContext);
@@ -106,7 +108,7 @@ sap.ui.define([
 		},
 		onCancel: function(oEvent) {
 			this.getOwnerComponent().getModel().resetChanges();
-			this.byId("createAndEditDialog").close();
+			oEvent.getSource().getParent().close();
 		},
 		onSort: function (oEvent) {
 			this._bDescendingSort = !this._bDescendingSort;
