@@ -53,6 +53,7 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel, ManagedOb
 						if(oModule.Type === "Component") {								
 							var sPackageName = sModuleName.replace(/-/g, '');
 							// Register component path
+							// TODO: replace with https://sapui5.hana.ondemand.com/#/api/sap.ui.loader/methods/sap.ui.loader.config
 							jQuery.sap.registerModulePath("incentergy."+sPackageName, "./"+sModuleName+"-frontend/incentergy/"+sPackageName);
 							
 							var sManifestUrl = "./"+sModuleName+"-frontend/incentergy/"+sPackageName+"/manifest.json";
@@ -73,11 +74,17 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel, ManagedOb
 							var sPackageName = sModuleName.replace(/-/g, '.');
 							if(sPackageName == "base.openui5ol") {
 								sPackageName = "ol";
+								// TODO: replace with https://sapui5.hana.ondemand.com/#/api/sap.ui.loader/methods/sap.ui.loader.config
 								jQuery.sap.registerModulePath("ol", "https://cdnjs.cloudflare.com/ajax/libs/ol3/4.6.5/ol");
 								
 							}
 							// Register library path
 							jQuery.sap.registerModulePath("incentergy."+sPackageName, "./"+sModuleName+"-lib/incentergy/"+sPackageName.replace(".", "/"));
+							if(sPackageName == "base.websocket") {
+								sap.ui.require(["incentergy/base/websocket/Connection"], function (Connection) {
+									new Connection();
+								});
+							}
 							return Promise.resolve({});
 						} else {
 							Log.error("Found unsupported Module Type: "+oModule.Type);

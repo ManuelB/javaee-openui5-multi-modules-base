@@ -7,8 +7,12 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 				var mParameters = oEvent.getParameters();
 				var sModuleParameter = mParameters.arguments["module*"];
 				this.processModuleParameter(sModuleParameter);
-				
 			}.bind(this));
+			
+			sap.ui.getCore().getEventBus().subscribe("server-event", "menu-update", function (oEvent) {
+				this.byId("menu").getBinding("items").refresh();
+			}.bind(this));
+			
 		},
 		processModuleParameter: function(sModuleParameter) {
 			// if this is loaded in response for an OAuth grand

@@ -1,0 +1,36 @@
+{
+	"_version": "1.1.0",
+	"sap.app": {
+		"_version": "1.1.0",
+		"id": "incentergy.base.websocket",
+		"type": "library",
+		"title": "Websocket Connection to server",
+		"description": "This implements a Websocket connection to the server that puts the events into the event bus",
+		"applicationVersion": {
+			"version": "1.0.0"
+		}
+	},
+	"sap.ui": {
+		"_version": "1.1.0",
+		"technology": "UI5",
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": [
+			"sap_fiori_3"
+		]
+	},
+	"sap.ui5": {
+		"_version": "1.1.0",
+		"dependencies": {
+			"minUI5Version": "1.68.1",
+			"libs": {
+				"sap.ui.core": {
+					
+				}
+			}
+		}
+	}
+}

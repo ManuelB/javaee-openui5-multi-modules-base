@@ -25,6 +25,7 @@ sap.ui.define(["sap/ui/core/Control", "sap/ui/dom/includeScript", "sap/base/Log"
      
                 //next, render the control information, this handles your sId (you must do this for your control to be properly tracked by ui5).
                 oRm.writeControlData(oControl);
+                oRm.writeClasses();
                 oRm.write(">");
                 
                 // and obviously, close off our div

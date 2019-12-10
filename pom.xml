@@ -19,6 +19,8 @@
     <module>vega</module>
     <module>opensearch</module>
     <module>openui5ol</module>
-      <module>base-menu-support</module>
+    <module>menu-support</module>
+    <module>websocket</module>
+    <module>websocket-backend</module>
   </modules>
 </project>

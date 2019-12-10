@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,7 +72,11 @@ public class MenuSupportSingelton {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			// e.g.
 			// /home/manuel/wildfly-18.0.0.Final/standalone/deployments/employee-frontend.war/WEB-INF/lib/base-menu-support-1.0-SNAPSHOT.jar/META-INF/base-menu-support
-			String pathOfMarkerFile = classLoader.getResource("/META-INF/base-menu-support").getPath();
+			URL url = classLoader.getResource("/META-INF/base-menu-support");
+			if(url == null) {
+				log.warning("Marker file not found. Sending empty message.");
+			} else {
+			String pathOfMarkerFile = url.getPath();
 			String webAppPath = pathOfMarkerFile.replaceAll("[^\\/]*/[^\\/]*/[^\\/]*/META-INF/base-menu-support", "");
 			String manifestJsonFullPath = webAppPath + manifestJsonPath;
 			try (InputStream input = new FileInputStream(manifestJsonFullPath)) {
@@ -83,46 +88,7 @@ public class MenuSupportSingelton {
 					if (jsonValue instanceof JsonObject) {
 						JsonObject route = (JsonObject) jsonValue;
 						if (route.containsKey("navigationItem")) {
-							JsonObject navigationItem = route.getJsonObject("navigationItem");
-
-							JsonObjectBuilder languages = Json.createObjectBuilder();
-
-							JsonObject texts = navigationItem.getJsonObject("text");
-
-							for (Entry<String, JsonValue> entry : texts.entrySet()) {
-								languages.add(entry.getKey(),
-										Json.createObjectBuilder().add("xsi:type", ".NavigationListItemLocalized")
-												.add("locale", entry.getKey()).add("text", entry.getValue())
-												.add("navigationListItem", navigationItem.getString("id")).build());
-							}
-
-							JsonObjectBuilder javaNavigationItemBuilder = Json.createObjectBuilder()
-									.add("xsi:type", ".NavigationListItem").add("id", navigationItem.getString("id"))
-									.add("children", Json.createArrayBuilder().build())
-									.add("parent",
-											navigationItem.containsKey("parent")
-													? navigationItem.getJsonString("parent")
-													: JsonValue.NULL)
-									.add("navigationListItemLocalized", languages)
-									.add("route",
-											navigationItem.containsKey("route") ? navigationItem.getJsonString("route")
-													: JsonValue.NULL)
-									.add("topLevelItem", navigationItem.getBoolean("topLevelItem", true))
-									.add("sort",
-											navigationItem.containsKey("sort") ? navigationItem.getJsonNumber("sort")
-													: JsonValue.NULL)
-									
-									.add("icon",
-											navigationItem.containsKey("icon")
-													? navigationItem.getJsonString("icon")
-													: JsonValue.NULL);
-							
-							if(navigationItem.containsKey("roleAllowed")) {
-								javaNavigationItemBuilder.add("roleAllowed",
-									navigationItem.containsKey("roleAllowed")
-											? navigationItem.getJsonString("roleAllowed")
-											: JsonValue.NULL);
-							}
+							JsonObjectBuilder javaNavigationItemBuilder = createNavigationItem(route);
 
 							navigationListItemListItems.add(javaNavigationItemBuilder.build());
 						}
@@ -136,12 +102,57 @@ public class MenuSupportSingelton {
 				log.log(Level.WARNING, "Error on reading manifest.json", e);
 			}
 		}
+		}
 
 		deploymentEventJson.add("navigationListItemList",
 				Json.createObjectBuilder().add("items", navigationListItemListItems));
 		String json = deploymentEventJson.build().toString();
 		log.fine(json);
 		return context.createTextMessage(json);
+	}
+
+	private JsonObjectBuilder createNavigationItem(JsonObject route) {
+		JsonObject navigationItem = route.getJsonObject("navigationItem");
+
+		JsonObjectBuilder languages = Json.createObjectBuilder();
+
+		JsonObject texts = navigationItem.getJsonObject("text");
+
+		for (Entry<String, JsonValue> entry : texts.entrySet()) {
+			languages.add(entry.getKey(),
+					Json.createObjectBuilder().add("xsi:type", ".NavigationListItemLocalized")
+							.add("locale", entry.getKey()).add("text", entry.getValue())
+							.add("navigationListItem", navigationItem.getString("id")).build());
+		}
+
+		JsonObjectBuilder javaNavigationItemBuilder = Json.createObjectBuilder()
+				.add("xsi:type", ".NavigationListItem").add("id", navigationItem.getString("id"))
+				.add("children", Json.createArrayBuilder().build())
+				.add("parent",
+						navigationItem.containsKey("parent")
+								? navigationItem.getJsonString("parent")
+								: JsonValue.NULL)
+				.add("navigationListItemLocalized", languages)
+				.add("route",
+						navigationItem.containsKey("route") ? navigationItem.getJsonString("route")
+								: JsonValue.NULL)
+				.add("topLevelItem", navigationItem.getBoolean("topLevelItem", true))
+				.add("sort",
+						navigationItem.containsKey("sort") ? navigationItem.getJsonNumber("sort")
+								: JsonValue.NULL)
+				
+				.add("icon",
+						navigationItem.containsKey("icon")
+								? navigationItem.getJsonString("icon")
+								: JsonValue.NULL);
+		
+		if(navigationItem.containsKey("roleAllowed")) {
+			javaNavigationItemBuilder.add("roleAllowed",
+				navigationItem.containsKey("roleAllowed")
+						? navigationItem.getJsonString("roleAllowed")
+						: JsonValue.NULL);
+		}
+		return javaNavigationItemBuilder;
 	}
 
 	private String getManifestJsonPath() {

@@ -20,7 +20,7 @@
 		<tnt:sideContent>
 			<tnt:SideNavigation expanded="true"
 				itemSelect="onItemSelect">
-				<tnt:NavigationList
+				<tnt:NavigationList id="menu"
 					items="{path: 'Menu>/NavigationListItems',
 			        sorter: {
 			            path: 'Sort'
@@ -58,7 +58,7 @@
 									<cards:Header title="{Cards>header/title}" subtitle="{Cards>header/subTitle}" iconSrc="{Cards>header/icon/src}" statusText="{Cards>header/status/text}"></cards:Header>
 								</f:header>
 								<f:content>
-									<vega:Vega content="{Cards>content}" />
+									<vega:Vega class="sapUiTinyMargin" content="{Cards>content}" />
 								</f:content>
 							</f:Card>
 						</f:items>

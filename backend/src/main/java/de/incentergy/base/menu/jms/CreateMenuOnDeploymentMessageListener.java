@@ -8,10 +8,14 @@ import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.MessageDrivenContext;
+import javax.inject.Inject;
+import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import javax.jms.Topic;
+import javax.json.Json;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -28,12 +32,19 @@ import de.incentergy.base.menu.entities.NavigationListItem;
 		@ActivationConfigProperty(propertyName = "messageSelector", propertyValue = "") })
 public class CreateMenuOnDeploymentMessageListener implements MessageListener {
 
+	private static final Logger log = Logger.getLogger(CreateMenuOnDeploymentMessageListener.class.getName());
+
+	@Inject
+	private JMSContext context;
+
 	@PersistenceContext
 	EntityManager em;
 
 	@Resource
 	private MessageDrivenContext mesageDrivenContext;
-	private static final Logger log = Logger.getLogger(CreateMenuOnDeploymentMessageListener.class.getName());
+
+	@Resource(mappedName = "java:/jms/base/client-websocket")
+	Topic topic;
 
 	private ObjectMapper objectMapper;
 
@@ -61,6 +72,11 @@ public class CreateMenuOnDeploymentMessageListener implements MessageListener {
 							.map(nli -> em.find(NavigationListItem.class, nli.getId())).filter(Objects::nonNull)
 							.forEach(nli -> em.remove(nli));
 				}
+
+				context.createProducer().send(topic,
+						Json.createObjectBuilder().add("channelId", "server-event").add("eventId", "menu-update")
+								.add("appName", deploymentEvent.getApplicationName()).build().toString());
+
 			} catch (JMSException e) {
 				log.log(Level.SEVERE, "Exception during createing NavigationListItem: {0}", e.toString());
 				mesageDrivenContext.setRollbackOnly();
