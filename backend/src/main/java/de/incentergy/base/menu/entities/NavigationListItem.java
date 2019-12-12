@@ -168,7 +168,7 @@ public class NavigationListItem {
 
 		String acceptLanguage = httpServletRequest.getHeader("Accept-Language");
 
-		return acceptLanguage != null && acceptLanguage.length() > 2 ? acceptLanguage.substring(0, 2) : "en";
+		return acceptLanguage != null && acceptLanguage.length() >= 2 ? acceptLanguage.substring(0, 2) : "en";
 	}
 
 	@XmlTransient
