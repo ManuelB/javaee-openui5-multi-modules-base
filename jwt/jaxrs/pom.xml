@@ -68,6 +68,7 @@
 						<configuration>
 							<source>8</source>
 							<additionalparam>-Xdoclint:none</additionalparam>
+							<detectJavaApiLink>false</detectJavaApiLink>
 						</configuration>
 					</execution>
 				</executions>
