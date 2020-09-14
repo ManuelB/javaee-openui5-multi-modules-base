@@ -89,9 +89,9 @@ sap.ui.define([
 		XMLHttpRequestModifier.prototype._handleUnauthorizedRequest = function (xhr) {
 			this.attachEventOnce("loginSuccess", function () {
 				xhr.open(xhr._httpMethod, xhr._httpUrl, xhr._httpAsync);
-				for (var header in xhr._httpRequestHeader) {
-					xhr.setRequestHeader(header, xhr._httpRequestHeader[header]);
-				}
+				// for (var header in xhr._httpRequestHeader) {
+				//	xhr.setRequestHeader(header, xhr._httpRequestHeader[header]);
+				// }
 				xhr.send(xhr._httpRequestBody);
 			});
 
