@@ -1,7 +1,7 @@
 sap.ui.define(["sap/base/Log"], function(Log) {
 	"use strict";
 	return function () {
-		var sWebSocketUrl = "ws"+(window.location.protocol == 'https' ? 's' : '')+"://"+window.location.host+"/base-websocket-backend/client";
+		var sWebSocketUrl = "ws"+(window.location.protocol == 'https:' ? 's' : '')+"://"+window.location.host+"/base-websocket-backend/client";
 		Log.info("[constructor] WebSocket to: "+sWebSocketUrl);
 	    var oWebsocket = new WebSocket(sWebSocketUrl);
 
