@@ -21,6 +21,10 @@ import org.apache.olingo.odata2.jpa.processor.api.ODataJPATransaction;
 import org.apache.olingo.odata2.jpa.processor.api.exception.ODataJPARuntimeException;
 
 public abstract class JpaODataServiceFactory extends ODataJPAServiceFactory {
+	
+	static {
+		org.apache.olingo.odata2.jpa.processor.api.factory.ODataJPAFactory.setImplementation(de.incentergy.base.olingo.ODataJPAFactoryImpl.class);
+	}
 
 	private static Logger log = Logger.getLogger(JpaODataServiceFactory.class.getName());
 

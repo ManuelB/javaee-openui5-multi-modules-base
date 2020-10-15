@@ -3,9 +3,9 @@ sap.ui.define(["sap/ui/core/Control", "sap/ui/dom/includeScript", "sap/base/Log"
 		"use strict";
 
 		
-		var pVegaLibsLoaded = includeScript({"url": "https://cdn.jsdelivr.net/npm/vega@5.6.0"}).then(function () {		
-			return includeScript({"url": "https://cdn.jsdelivr.net/npm/vega-lite@4.0.0-beta.8"}).then(function () {				
-				return includeScript({"url": "https://cdn.jsdelivr.net/npm/vega-embed@5.1.3"});
+		var pVegaLibsLoaded = includeScript({"url": "https://cdn.jsdelivr.net/npm/vega@5.17.0"}).then(function () {		
+			return includeScript({"url": "https://cdn.jsdelivr.net/npm/vega-lite@4.17.0"}).then(function () {				
+				return includeScript({"url": "https://cdn.jsdelivr.net/npm/vega-embed@6.12.2"});
 			});
 		});
 
@@ -39,15 +39,40 @@ sap.ui.define(["sap/ui/core/Control", "sap/ui/dom/includeScript", "sap/base/Log"
 					try {
 						var oContent = JSON.parse(this.getContent());
 						if(document.getElementById(this.getId())) {
-							vegaEmbed('#'+this.getId(), oContent, {
-								loader: vega.loader({
-									"http": {
-										"headers": {
-									      "Authorization": "Bearer "+sap.ui.getCore().getComponent(this._sOwnerId).getJwtToken(),
-									      "Accept": "application/json"
-									    }
+							let incentergyLoader = vega.loader({
+								"http": {
+									"headers": {
+								      "Authorization": "Bearer "+sap.ui.getCore().getComponent(this._sOwnerId).getJwtToken(),
+								      "Accept": "application/json"
+								    }
+								}
+							});
+							let oldLoad = incentergyLoader.load;
+							incentergyLoader.load = function(uri) {
+								if(uri.startsWith("indexeddb://")) {
+									let matches = uri.match(/indexeddb:\/\/([^\/]+)\/([^\/]+)/);
+									if(matches) {
+										let sDb = matches[1];
+										let sObjectStore = matches[2];
+										return new Promise(function (fnResolve) {
+											let request = indexedDB.open(sDb);
+											request.onsuccess = function (event) {
+												let db = event.target.result;
+												db.transaction(sObjectStore, "readonly").objectStore(sObjectStore).getAll().onsuccess = function(event) {											
+													fnResolve(event.target.result);
+												};
+											}
+										});
+									} else {
+										alert(" should be e.g. indexeddb://database/store but was: "+uri);
 									}
-								})
+								} else {
+									return oldLoad.apply(this, arguments);
+								}
+							};
+							
+							vegaEmbed('#'+this.getId(), oContent, {
+								loader: incentergyLoader
 						    }).then(function(result) {
 						      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
 							

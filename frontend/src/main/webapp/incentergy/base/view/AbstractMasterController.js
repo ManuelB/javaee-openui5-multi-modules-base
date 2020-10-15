@@ -1,5 +1,4 @@
 sap.ui.define([
-	"sap/ui/model/json/JSONModel",
 	"./AbstractController",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
@@ -7,7 +6,7 @@ sap.ui.define([
 	'sap/m/MessageBox',
 	'sap/m/MessageToast',
 	"sap/ui/core/Fragment"
-], function (JSONModel, AbstractController, Filter, FilterOperator, Sorter, MessageBox, MessageToast, Fragment) {
+], function (AbstractController, Filter, FilterOperator, Sorter, MessageBox, MessageToast, Fragment) {
 	"use strict";
 
 	return AbstractController.extend("incentergy.base.view.AbstractMasterController", {
@@ -106,7 +105,7 @@ sap.ui.define([
 				}.bind(this)
 			});
 		},
-		onCancel: function(oEvent) {
+		onCancel: function (oEvent) {
 			this.getOwnerComponent().getModel().resetChanges();
 			oEvent.getSource().getParent().close();
 		},

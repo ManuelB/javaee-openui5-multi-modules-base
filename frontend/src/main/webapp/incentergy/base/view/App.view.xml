@@ -60,6 +60,9 @@
 								<f:content>
 									<vega:Vega class="sapUiTinyMargin" content="{Cards>content}" />
 								</f:content>
+								<f:layoutData>
+									<f:GridContainerItemLayoutData rows="{Cards>rows}" columns="{Cards>columns}" />
+								</f:layoutData>
 							</f:Card>
 						</f:items>
 					</f:GridContainer>

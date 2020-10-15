@@ -57,6 +57,9 @@ public class FilterJpaProcessor extends ODataJPADefaultProcessor {
 		var uriInfoImpl = (UriInfoImpl) uriParserResultView;
 		var filter = uriInfoImpl.getFilter();
 		var jwtToken = get(JsonWebToken.class);
+		if(jwtToken == null) {
+			throw new ODataException("jwtToken in addOnlyRoleAllowed is null");
+		}
 		try {
 			var filterString = ((filter != null && filter.getUriLiteral() != null && !filter.getUriLiteral().isBlank())
 					? "("+filter.getUriLiteral() + ") and "

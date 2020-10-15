@@ -27,6 +27,8 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
+import org.jboss.vfs.VFS;
+
 @Singleton
 @Startup
 public class MenuSupportSingelton {
@@ -39,7 +41,7 @@ public class MenuSupportSingelton {
 
 	@Resource(lookup = "java:app/AppName")
 	private String appName;
-
+	
 	private static final Logger log = Logger.getLogger(MenuSupportSingelton.class.getName());
 
 	private static final Pattern APP_NAME_WITHOUT_FRONTEND = Pattern.compile("(.*)-frontend");
@@ -76,32 +78,39 @@ public class MenuSupportSingelton {
 			if(url == null) {
 				log.warning("Marker file not found. Sending empty message.");
 			} else {
-			String pathOfMarkerFile = url.getPath();
-			String webAppPath = pathOfMarkerFile.replaceAll("[^\\/]*/[^\\/]*/[^\\/]*/META-INF/base-menu-support", "");
-			String manifestJsonFullPath = webAppPath + manifestJsonPath;
-			try (InputStream input = new FileInputStream(manifestJsonFullPath)) {
-				JsonObject manifestJson = Json.createReader(input).readObject();
-				input.close();
-				JsonArray routes = manifestJson.getJsonObject("sap.ui5").getJsonObject("routing")
-						.getJsonArray("routes");
-				for (JsonValue jsonValue : routes) {
-					if (jsonValue instanceof JsonObject) {
-						JsonObject route = (JsonObject) jsonValue;
-						if (route.containsKey("navigationItem")) {
-							JsonObjectBuilder javaNavigationItemBuilder = createNavigationItem(route);
-
-							navigationListItemListItems.add(javaNavigationItemBuilder.build());
+				
+				// try {
+				//	File physicalFile = VFS.getChild(url.toURI()).getPhysicalFile();
+				//	url = physicalFile.toURI().toURL();
+				//} catch (IOException | URISyntaxException e1) {
+				//	log.log(Level.WARNING, "Error on reading manifest.json", e1);
+				//}
+				String pathOfMarkerFile = url.getPath();
+				String webAppPath = pathOfMarkerFile.replaceAll("[^\\/]*/[^\\/]*/[^\\/]*/META-INF/base-menu-support", "");
+				String manifestJsonFullPath = webAppPath + manifestJsonPath;
+				try (InputStream input = new FileInputStream(VFS.getChild(manifestJsonFullPath).getPhysicalFile())) {
+					JsonObject manifestJson = Json.createReader(input).readObject();
+					input.close();
+					JsonArray routes = manifestJson.getJsonObject("sap.ui5").getJsonObject("routing")
+							.getJsonArray("routes");
+					for (JsonValue jsonValue : routes) {
+						if (jsonValue instanceof JsonObject) {
+							JsonObject route = (JsonObject) jsonValue;
+							if (route.containsKey("navigationItem")) {
+								JsonObjectBuilder javaNavigationItemBuilder = createNavigationItem(route);
+	
+								navigationListItemListItems.add(javaNavigationItemBuilder.build());
+							}
+						} else {
+							log.log(Level.WARNING, "sap.ui5/routing/routes contains non objects: {0}", jsonValue);
 						}
-					} else {
-						log.log(Level.WARNING, "sap.ui5/routing/routes contains non objects: {0}", jsonValue);
 					}
+				} catch (FileNotFoundException e) {
+					log.log(Level.WARNING, "Did not find manifest.json", e);
+				} catch (IOException e) {
+					log.log(Level.WARNING, "Error on reading manifest.json", e);
 				}
-			} catch (FileNotFoundException e) {
-				log.log(Level.WARNING, "Did not find manifest.json", e);
-			} catch (IOException e) {
-				log.log(Level.WARNING, "Error on reading manifest.json", e);
 			}
-		}
 		}
 
 		deploymentEventJson.add("navigationListItemList",

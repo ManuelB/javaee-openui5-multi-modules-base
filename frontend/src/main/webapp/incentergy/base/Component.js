@@ -1,7 +1,7 @@
-sap.ui.define([ "sap/ui/core/UIComponent", "sap/ui/core/mvc/XMLView", "./login/XMLHttpRequestModifier", "sap/base/Log",
+sap.ui.define([ "sap/ui/core/Component", "sap/ui/core/UIComponent", "sap/ui/core/mvc/XMLView", "./login/XMLHttpRequestModifier", "sap/base/Log",
 	"sap/ui/model/json/JSONModel", 
 	"sap/ui/base/ManagedObject"],
-function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel, ManagedObject) {
+function(Component, UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel, ManagedObject) {
 	"use strict";
 	return UIComponent.extend("incentergy.base.Component", {
 
@@ -60,6 +60,7 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel, ManagedOb
 							return fetch(sManifestUrl, {
 								credentials: 'include'
 							}).then(function(oResponse) {
+								
 								if(!oResponse.ok) {
 									Log.error(sManifestUrl+" "+oResponse.statusCode+" "+oResponse.statusText);
 									return Promise.resolve({});
@@ -111,6 +112,15 @@ function(UIComponent, XMLView, XMLHttpRequestModifier, Log, JSONModel, ManagedOb
 									oJson.content = JSON.stringify(oJson.content); 
 									return oJson;
 								}));
+							}
+							if("incentergy.base.event" in oManifest) {
+								for(let oEvent of oManifest["incentergy.base.event"]) {
+									sap.ui.getCore().getEventBus().subscribe(oEvent.channel, oEvent.eventId, function (sChannelId, sEventId, oEventData) {
+										Component.load({"name": oManifest["sap.app"]["id"]}).then((oComponentClass) => {
+											new oComponentClass()[oEvent.listenerFunctionOnComponent](sChannelId, sEventId, oEventData);
+										});
+									});
+								}
 							}
 						}.bind(this));
 						this.getModel("Cards").setData(aVegaCards);
