@@ -35,10 +35,13 @@ sap.ui.define([
 				sQuery = oEvent.getParameter("query");
 
 			if (sQuery && sQuery.length > 0) {
-				oTableSearchState = [new Filter(this.getSortField(), FilterOperator.Contains, sQuery)];
+				oTableSearchState = this.getFilter(sQuery);
 			}
 
 			this.getView().byId(this.getEntityName()+"Table").getBinding("items").filter(oTableSearchState, "Application");
+		},
+		getFilter: function(sQuery) {
+			return [new Filter(this.getSearchField(), FilterOperator.Contains, sQuery)];
 		},
 		onAdd: function (oEvent) {
 			this.oRouter.navTo("add");
@@ -117,6 +120,9 @@ sap.ui.define([
 				oSorter = new Sorter(this.getSortField(), this._bDescendingSort);
 
 			oBinding.sort(oSorter);
+		},
+		getSearchField: function () {
+			return this.getSortField();
 		},
 		getSortField: function () {
 			return "Name";

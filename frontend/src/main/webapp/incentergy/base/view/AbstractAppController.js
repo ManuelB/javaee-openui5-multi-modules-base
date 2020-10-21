@@ -1,10 +1,9 @@
 sap.ui.define([
-	"sap/ui/model/json/JSONModel",
 	"sap/ui/core/ResizeHandler",
 	"./AbstractController",
 	"sap/f/FlexibleColumnLayout",
 	"sap/base/Log"
-], function (JSONModel, ResizeHandler, AbstractController, FlexibleColumnLayout, Log) {
+], function (ResizeHandler, AbstractController, FlexibleColumnLayout, Log) {
 	"use strict";
 
 	return AbstractController.extend("incentergy.base.view.AbstractAppController", {
@@ -72,7 +71,11 @@ sap.ui.define([
 		},
 
 		onExit: function () {
-			this.oRouter.detachRouteMatched(this.onRouteMatched, this);
+			try {
+				this.oRouter.detachRouteMatched(this.onRouteMatched, this);
+			} catch(e) {
+				Log.warning(e);
+			}
 		}
 	});
 }, true);
