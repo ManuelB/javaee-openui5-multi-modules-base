@@ -43,7 +43,7 @@
 			<NavContainer id="navContainer">
 				<pages>
 					<f:GridContainer id="gridContainer"
-						class="sapUiSmallMargin" items="{Cards>/}">
+						class="sapUiSmallMargin" snapToRow="true" items="{Cards>/}">
 						<f:layout>
 							<f:GridContainerSettings rowSize="8rem"
 								columnSize="20rem" gap="1rem" />
