@@ -13,7 +13,7 @@ module de.incentergy.base {
 	requires com.fasterxml.jackson.databind;
 	requires com.fasterxml.jackson.module.jaxb;
 	requires microprofile.jwt.auth.api;
-	requires base.olingo;
 	requires jwt.auth.jaxrs.prototype;
+	requires de.incentergy.base.olingo;
 	exports de.incentergy.base.olingo.data;
 }

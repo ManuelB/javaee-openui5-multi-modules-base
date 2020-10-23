@@ -49,12 +49,25 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-  <repositories>
-    <!--other repositories if any-->
-    <repository>
-        <id>project.local</id>
-        <name>project</name>
-        <url>file:${project.basedir}/lib</url>
-    </repository>
-</repositories>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<!-- Correctly add the module path to javac -->
+					<release>11</release>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<!--other repositories if any -->
+		<repository>
+			<id>project.local</id>
+			<name>project</name>
+			<url>file:${project.basedir}/lib</url>
+		</repository>
+	</repositories>
 </project>

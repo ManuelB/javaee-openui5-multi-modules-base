@@ -18,13 +18,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.microprofile</groupId>
-			<artifactId>microprofile</artifactId>
-			<version>2.0.1</version>
-			<type>pom</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>de.incentergy.base</groupId>
 			<artifactId>base-olingo</artifactId>
 			<version>1.0-SNAPSHOT</version>
@@ -44,10 +37,31 @@
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
 			<version>2.10.1</version>
+			<exclusions>
+			     <exclusion>  <!-- declare the exclusion here -->
+				     <groupId>jakarta.xml.bind</groupId>
+				     <artifactId>jakarta.xml.bind-api</artifactId>
+			     </exclusion>
+                             <exclusion>  <!-- declare the exclusion here -->
+                                     <groupId>jakarta.activation</groupId>
+                                     <artifactId>jakarta.activation-api</artifactId>
+                             </exclusion>
+		        </exclusions>
 		</dependency>
 	</dependencies>
 	<build>
 		<finalName>base-backend</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<!-- Correctly add the module path to javac -->
+					<release>11</release>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
