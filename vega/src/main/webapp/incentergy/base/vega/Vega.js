@@ -63,7 +63,7 @@ sap.ui.define(["sap/ui/core/Control", "sap/ui/dom/includeScript", "sap/base/Log"
 														fnResolve(event.target.result);
 													};
 												} else {
-													Log.warn(uri+" does not exists.");
+													Log.warning(uri+" does not exists.");
 													fnResolve([]);
 												}
 											}
