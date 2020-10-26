@@ -58,9 +58,14 @@ sap.ui.define(["sap/ui/core/Control", "sap/ui/dom/includeScript", "sap/base/Log"
 											let request = indexedDB.open(sDb);
 											request.onsuccess = function (event) {
 												let db = event.target.result;
-												db.transaction(sObjectStore, "readonly").objectStore(sObjectStore).getAll().onsuccess = function(event) {											
-													fnResolve(event.target.result);
-												};
+												if(db.objectStoreNames.contains(sObjectStore)) {
+													db.transaction(sObjectStore, "readonly").objectStore(sObjectStore).getAll().onsuccess = function(event) {											
+														fnResolve(event.target.result);
+													};
+												} else {
+													Log.warn(uri+" does not exists.");
+													fnResolve([]);
+												}
 											}
 										});
 									} else {

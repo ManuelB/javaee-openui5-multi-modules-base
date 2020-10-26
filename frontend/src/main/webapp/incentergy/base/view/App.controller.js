@@ -28,6 +28,16 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 					"hash": sModuleParameter,
 					"type": "access_token"
 				});
+			// show again the start page
+			} else if(sModuleParameter === undefined && this.byId("navContainer").getCurrentPage() != this.byId("dashboard")) {
+				this._sCurrentModule = undefined;
+				var oNavContainer = this.byId("navContainer");
+				oNavContainer.removeAllPages();
+				if(this._oldComponentContainer) {
+					this._oldComponentContainer.destroy();
+					this._oldComponentContainer = undefined;
+				}
+				oNavContainer.addPage(this.byId("dashboard"));
 			} else {
 				this.getOwnerComponent().modulesLoaded().then(function () {					
 					this.loadComponent(sModuleParameter);
@@ -40,12 +50,14 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 				if(sPackageName !== this._sCurrentModule) {
 					this._sCurrentModule = sPackageName;
 					var oNavContainer = this.byId("navContainer");
+					this.getView().addDependent(this.byId("dashboard"));
 					oNavContainer.removeAllPages();
 					
 					var sComponentName = "incentergy."+sPackageName;
 					
 					if(this._oldComponentContainer) {
 						this._oldComponentContainer.destroy();
+						this._oldComponentContainer = undefined;
 					}
 					
 					// var oComponent = Component.get(sComponentName);
@@ -65,7 +77,6 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 					});
 					this._oldComponentContainer = oContainer;
 					oNavContainer.addPage(oContainer);
-					oNavContainer.to(oContainer);
 				}
 			}
 		},
@@ -92,22 +103,25 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/ComponentContainer", "
 				    .then(response => response.text())
 		        	.then(str => (new window.DOMParser()).parseFromString(str, "text/xml")); }.bind(this))
 		    ).then(function (aDocuments) {
-		        		aDocuments.forEach(function (oDocument) {
-		        			Array.from(oDocument.getElementsByTagName('entry')).forEach(function (oEntry) {
-		        				var sUrl = oEntry.getElementsByTagName('id')[0].textContent;
-		        				var aSummaries = oEntry.getElementsByTagName('summary');
-		        				var aTitles =  oEntry.getElementsByTagName('title');
-		        				oList.addItem(new StandardListItem({
-		        					"title": aTitles.length > 0 ? aTitles[0].textContent : "No Title",
-		        					"description": aSummaries.lenght > 0 ? aSummaries[0].textContent : "",
-		        					"type": "Active", 
-		        					"press": function () {
-		        						oRouter.navTo("module", {"module*": sUrl});
-		        					}
-			        			}));
-			        		})
+	        		aDocuments.forEach(function (oDocument) {
+	        			Array.from(oDocument.getElementsByTagName('entry')).forEach(function (oEntry) {
+	        				var sUrl = oEntry.getElementsByTagName('id')[0].textContent;
+	        				var aSummaries = oEntry.getElementsByTagName('summary');
+	        				var aTitles =  oEntry.getElementsByTagName('title');
+	        				oList.addItem(new StandardListItem({
+	        					"title": aTitles.length > 0 ? aTitles[0].textContent : "No Title",
+	        					"description": aSummaries.lenght > 0 ? aSummaries[0].textContent : "",
+	        					"type": "Active", 
+	        					"press": function () {
+	        						oRouter.navTo("module", {"module*": sUrl});
+	        					}
+		        			}));
+		        		})
 		        	});
 		    });
+		},
+		onHomeIconPressed: function() {
+			this.getOwnerComponent().getRouter().navTo("module", {"module*": undefined});
 		}
 	});
 

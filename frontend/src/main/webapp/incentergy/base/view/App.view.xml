@@ -1,13 +1,14 @@
 <mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc"
-	xmlns="sap.m" xmlns:f="sap.f" xmlns:cards="sap.f.cards" xmlns:tnt="sap.tnt" xmlns:vega="incentergy.base.vega"
+	xmlns="sap.m" xmlns:f="sap.f" xmlns:cards="sap.f.cards"
+	xmlns:tnt="sap.tnt" xmlns:vega="incentergy.base.vega"
 	controllerName="incentergy.base.view.App">
 	<tnt:ToolPage id="toolPage">
 		<tnt:header>
-			<f:ShellBar title="Java EE OpenUI5 Module System"
-				secondTitle="Running on wildfly" showMenuButton="true"
-				homeIcon="./img/logo_ui5.png" showCopilot="false"
-				showNotifications="false" menuButtonPressed="onMenuButtonPress"
-				showProductSwitcher="false" notificationsNumber="0">
+			<f:ShellBar showMenuButton="true"
+				homeIcon="./img/logo_incentergy.png" homeIconPressed="onHomeIconPressed"
+				showCopilot="false" showNotifications="false"
+				menuButtonPressed="onMenuButtonPress" showProductSwitcher="false"
+				notificationsNumber="0">
 				<f:profile>
 					<f:Avatar src="{JWT>/img}" />
 				</f:profile>
@@ -31,7 +32,9 @@
 			        templateShareable: false
 			        }">
 					<tnt:NavigationListItem text="{Menu>Text}"
-						key="{Menu>Id}" icon="{Menu>Icon}" items="{path: 'Menu>Children', templateShareable: false}" expanded="false">
+						key="{Menu>Id}" icon="{Menu>Icon}"
+						items="{path: 'Menu>Children', templateShareable: false}"
+						expanded="false">
 						<tnt:NavigationListItem text="{Menu>Text}"
 							key="{Menu>Id}">
 						</tnt:NavigationListItem>
@@ -42,30 +45,39 @@
 		<tnt:mainContents>
 			<NavContainer id="navContainer">
 				<pages>
-					<f:GridContainer id="gridContainer"
-						class="sapUiSmallMargin" snapToRow="true" items="{Cards>/}">
-						<f:layout>
-							<f:GridContainerSettings rowSize="8rem"
-								columnSize="20rem" gap="1rem" />
-						</f:layout>
-						<f:layoutXS>
-							<f:GridContainerSettings rowSize="7rem"
-								columnSize="7rem" gap="1rem" />
-						</f:layoutXS>
-						<f:items>
-							<f:Card>
-								<f:header>
-									<cards:Header title="{Cards>header/title}" subtitle="{Cards>header/subTitle}" iconSrc="{Cards>header/icon/src}" statusText="{Cards>header/status/text}"></cards:Header>
-								</f:header>
-								<f:content>
-									<vega:Vega class="sapUiTinyMargin" content="{Cards>content}" />
-								</f:content>
-								<f:layoutData>
-									<f:GridContainerItemLayoutData rows="{Cards>rows}" columns="{Cards>columns}" />
-								</f:layoutData>
-							</f:Card>
-						</f:items>
-					</f:GridContainer>
+					<Page id="dashboard" showHeader="false">
+						<ScrollContainer vertical="true">
+							<f:GridContainer id="gridContainer"
+								class="sapUiSmallMargin" snapToRow="true" items="{Cards>/}">
+								<f:layout>
+									<f:GridContainerSettings rowSize="8rem"
+										columnSize="20rem" gap="1rem" />
+								</f:layout>
+								<f:layoutXS>
+									<f:GridContainerSettings
+										columnSize="40rem" rowSize="8rem" gap="1rem" />
+								</f:layoutXS>
+								<f:items>
+									<f:Card>
+										<f:header>
+											<cards:Header title="{Cards>header/title}"
+												subtitle="{Cards>header/subTitle}"
+												iconSrc="{Cards>header/icon/src}"
+												statusText="{Cards>header/status/text}"></cards:Header>
+										</f:header>
+										<f:content>
+											<vega:Vega class="sapUiTinyMargin"
+												content="{Cards>content}" />
+										</f:content>
+										<f:layoutData>
+											<f:GridContainerItemLayoutData
+												rows="{Cards>rows}" columns="{Cards>columns}" />
+										</f:layoutData>
+									</f:Card>
+								</f:items>
+							</f:GridContainer>
+						</ScrollContainer>
+					</Page>
 				</pages>
 			</NavContainer>
 		</tnt:mainContents>
