@@ -1,12 +1,13 @@
 sap.ui.define([
 	"./AbstractController",
 	"sap/ui/model/Filter",
+	"sap/ui/model/FilterType",
 	"sap/ui/model/FilterOperator",
 	'sap/ui/model/Sorter',
 	'sap/m/MessageBox',
 	'sap/m/MessageToast',
 	"sap/ui/core/Fragment"
-], function (AbstractController, Filter, FilterOperator, Sorter, MessageBox, MessageToast, Fragment) {
+], function (AbstractController, Filter, FilterType, FilterOperator, Sorter, MessageBox, MessageToast, Fragment) {
 	"use strict";
 
 	return AbstractController.extend("incentergy.base.view.AbstractMasterController", {
@@ -19,7 +20,26 @@ sap.ui.define([
 				}
 			}.bind(this));
 			
+			this.oRouter.attachRouteMatched(function(oEvent) {
+				if(oEvent.getParameter("name") == "search") {
+					this.onRouteSearchMatched(oEvent);
+				}
+			}.bind(this));
+			
 			this._bDescendingSort = false;
+		},
+		onRouteSearchMatched: function(oEvent) {
+			let sQuery = oEvent.getParameter("arguments").query;
+			
+			let aQueryParts = sQuery.split(/&/).map(s => s.split(/=/)).map(a => [a[0].replace("_", "/"), a[1]]);
+			
+			let aFilters = [];
+			for(let aPart of aQueryParts) {
+				let sField = aPart[0];
+				let sValue = aPart[1];
+				aFilters.push(new Filter({path: sField, operator: FilterOperator.EQ, value1: sValue}));
+			}
+			this.byId(this.getEntityName()+"Table").getBinding("items").filter(aFilters, FilterType.Application);
 		},
 		onListItemPress: function (oEvent) {
 			var oNextUIState = this.getOwnerComponent().getHelper().getNextUIState(1),
