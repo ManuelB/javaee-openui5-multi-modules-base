@@ -37,7 +37,8 @@ sap.ui.define(["sap/ui/core/Control", "sap/ui/dom/includeScript", "sap/base/Log"
 						return;
 					}
 					try {
-						var oContent = JSON.parse(this.getContent());
+						var sTwoWeeksAgoIso8601 = new Date(new Date().getTime()-3600*24*14*1000).toISOString().substr(0, 19);
+						var oContent = JSON.parse(this.getContent().replace(/__TWO_WEEKS_AGO__/g, "datetime'"+sTwoWeeksAgoIso8601+"'"));
 						if(document.getElementById(this.getId())) {
 							let incentergyLoader = vega.loader({
 								"http": {
