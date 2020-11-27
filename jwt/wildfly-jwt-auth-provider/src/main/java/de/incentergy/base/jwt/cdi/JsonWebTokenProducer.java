@@ -1,5 +1,6 @@
 package de.incentergy.base.jwt.cdi;
 
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +40,13 @@ public class JsonWebTokenProducer {
 			if (authHeaderVal != null && authHeaderVal.startsWith("Bearer")) {
 				String bearerToken = authHeaderVal.substring(7);
 				return getJsonWebTokenFromAuthorizationStringWithoutBearer(bearerToken, authContextInfo);
+			}
+			
+			if (authHeaderVal != null && authHeaderVal.startsWith("Basic")) {
+				String basicAuth = authHeaderVal.substring(6);
+				String unencodedBasicAuth = new String(Base64.getDecoder().decode(basicAuth));
+				// use the password as JWT token
+				return getJsonWebTokenFromAuthorizationStringWithoutBearer(unencodedBasicAuth.split(":")[1], authContextInfo);
 			}
 		} catch(Exception ex) {
 			// Caused by: org.jboss.weld.exceptions.IllegalStateException: WELD-000710: Cannot inject HttpServletRequest outside of a Servlet request
