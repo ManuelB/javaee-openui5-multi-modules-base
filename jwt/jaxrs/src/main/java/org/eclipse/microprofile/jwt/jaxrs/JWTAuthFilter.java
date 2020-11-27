@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,25 +57,33 @@ public class JWTAuthFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String authHeaderVal = requestContext.getHeaderString("Authorization");
         log.fine("JWTAuthFilter.authHeaderVal: "+authHeaderVal);
-        if (authHeaderVal != null && authHeaderVal.startsWith("Bearer")) {
-            try {
-                String bearerToken = authHeaderVal.substring(7);
-                JsonWebToken jwtPrincipal = validate(bearerToken);
-                // Install the JWT principal as the caller
-                final SecurityContext securityContext = requestContext.getSecurityContext();
-                JWTSecurityContext jwtSecurityContext = new JWTSecurityContext(securityContext, jwtPrincipal);
-                requestContext.setSecurityContext(jwtSecurityContext);
-                log.fine("Success\n");
-            }
-            catch (Exception ex) {
-            	log.log(Level.WARNING, "Failed setting security context", ex);
-                ex.printStackTrace();
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
-            }
+        try {
+        	String bearerToken = null;
+	        if (authHeaderVal != null && authHeaderVal.startsWith("Bearer")) {
+	                bearerToken = authHeaderVal.substring(7);
+	        }
+	        if (authHeaderVal != null && authHeaderVal.startsWith("Basic")) {
+				String basicAuth = authHeaderVal.substring(6);
+				String unencodedBasicAuth = new String(Base64.getDecoder().decode(basicAuth));
+				// use the password as JWT token
+				bearerToken = unencodedBasicAuth.split(":")[1];
+	        }
+	        if(bearerToken != null) {
+	        	JsonWebToken jwtPrincipal = validate(bearerToken);
+	        	// Install the JWT principal as the caller
+	        	final SecurityContext securityContext = requestContext.getSecurityContext();
+	        	JWTSecurityContext jwtSecurityContext = new JWTSecurityContext(securityContext, jwtPrincipal);
+	        	requestContext.setSecurityContext(jwtSecurityContext);
+	        	log.fine("Success\n");
+	        } else {
+	        	log.info("Failed due to missing Authorization bearer token");
+	        	requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+	        }
         }
-        else {
-        	log.info("Failed due to missing Authorization bearer token");
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+        catch (Exception ex) {
+        	log.log(Level.WARNING, "Failed setting security context", ex);
+        	ex.printStackTrace();
+        	requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
     }
 
